@@ -1,6 +1,7 @@
 package prr.core.terminal;
 
 import java.io.Serializable;
+import java.io.Serial;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -9,7 +10,7 @@ import java.io.Serializable;
  */
 abstract public class Terminal implements Serializable /* FIXME maybe add more interfaces */{
 
-	/** Serial number for serialization. */
+	@Serial
 	private static final long serialVersionUID = 202210161925L;
 
 	private int _id;
@@ -24,13 +25,18 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 		void setState(TerminalState state) {
 			Terminal.this._state = state;
 		}
-		abstract void turnOff();
-
-		abstract void setIdle();
-	
-		abstract void setBusy();
-
-		abstract void setSilence();
+		void turnOff() {
+			setState(new OffTerminalState());
+		}
+		void setIdle() {
+			setState(new IdleTerminalState());
+		}
+		void setBusy() {
+			setState(new BusyTerminalState());
+		}
+		void setSilence() {
+			setState(new SilenceTerminalState());
+		}
 
 		abstract boolean canStartCommunication();
 
