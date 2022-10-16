@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import prr.core.exception.UnrecognizedEntryException;
+import prr.core.exception.UnknownClientKeyException;
 // import more exception core classes if needed
 
 /* 
@@ -82,8 +83,8 @@ public class Parser {
            throw new UnrecognizedEntryException("Invalid specification in line: " + line);
         } 
       }
-    } catch (IllegalArgumentException e, ClientNotFoundException e) {
-      throw new UnrecognizedEntryException("Invalid specification: " + line, e);
+    } catch (IllegalArgumentException | UnknownClientKeyException e) {
+		throw new UnrecognizedEntryException("Invalid specification: " + line, e);
     }
   }
 

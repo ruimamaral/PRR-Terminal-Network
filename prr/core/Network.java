@@ -8,6 +8,7 @@ import java.io.IOException;
 import prr.core.exception.UnrecognizedEntryException;
 import prr.core.terminal.BasicTerminal;
 import prr.core.terminal.Terminal;
+import prr.core.exception.UnknownClientKeyException;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -36,7 +37,7 @@ public class Network implements Serializable {
 
 	void registerTerminal(String type, String id,
 			String client, String state) 
-			throws IllegalArgumentException, ClientNotFoundException {
+			throws IllegalArgumentException, UnknownClientKeyException {
 
 		Terminal newTerm;
 

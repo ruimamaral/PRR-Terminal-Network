@@ -1,6 +1,8 @@
 package prr.core.terminal;
 
 import java.io.Serializable;
+import java.util.Set;
+import java.util.TreeSet;
 import java.io.Serial;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
@@ -18,6 +20,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 	private Client _client;
 
 	private TerminalState _state;
+
+	private Set<String> _friends = new TreeSet<String>();
 
 	// Class that manages terminal state dependent functionalities.
 	public abstract class TerminalState implements Serializable { // maybe set private
