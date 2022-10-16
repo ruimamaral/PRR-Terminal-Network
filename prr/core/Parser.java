@@ -82,7 +82,7 @@ public class Parser {
            throw new UnrecognizedEntryException("Invalid specification in line: " + line);
         } 
       }
-    } catch (SomeOtherException e) {
+    } catch (IllegalArgumentException e, ClientNotFoundException e) {
       throw new UnrecognizedEntryException("Invalid specification: " + line, e);
     }
   }

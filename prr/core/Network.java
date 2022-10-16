@@ -1,8 +1,13 @@
 package prr.core;
 
 import java.io.Serializable;
+
+import javax.management.BadAttributeValueExpException;
+
 import java.io.IOException;
 import prr.core.exception.UnrecognizedEntryException;
+import prr.core.terminal.BasicTerminal;
+import prr.core.terminal.Terminal;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -28,5 +33,25 @@ public class Network implements Serializable {
 	void importFile(String filename) throws UnrecognizedEntryException, IOException /* FIXME maybe other exceptions */  {
 	//FIXME implement method
 	}
+
+	void registerTerminal(String type, String id,
+			String client, String state) 
+			throws IllegalArgumentException, ClientNotFoundException {
+
+		Terminal newTerm;
+
+		switch(type) {
+			case "BASIC" -> newTerm = new BasicTerminal(id, getClient(client)); //getClient throws exception
+			case "FANCY" -> newTerm = new FancyTerminal(id, getClient(client)); //maybe check id validity
+			default -> throw new IllegalArgumentException();
+		}
+		switch(state) {
+			case "IDLE" -> newTerm.setIdle();
+			case "OFF" -> newTerm.turnOff();
+			case "SILENCE" -> newTerm.setSilence();
+			default -> throw new IllegalArgumentException();
+		}
+	}
 }
+
 
