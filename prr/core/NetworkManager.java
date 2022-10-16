@@ -64,8 +64,9 @@ public class NetworkManager {
    * @throws ImportFileException
    */
   public void importFile(String filename) throws ImportFileException {
+    Parser parser = new Parser(this);
     try {
-      _network.importFile(filename);
+      parser.parseFile(filename);
     } catch (IOException | UnrecognizedEntryException /* FIXME maybe other exceptions */ e) {
       throw new ImportFileException(filename, e);
     }
