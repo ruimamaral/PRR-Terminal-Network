@@ -3,11 +3,14 @@ package prr.core;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 
+import prr.core.exception.DuplicateClientKeyException;
+import prr.core.exception.DuplicateTerminalKeyException;
 import prr.core.exception.ImportFileException;
 import prr.core.exception.MissingFileAssociationException;
 import prr.core.exception.UnavailableFileException;
 import prr.core.exception.UnrecognizedEntryException;
 import prr.core.exception.UnknownClientKeyException;
+import prr.core.exception.UnknownTerminalKeyException;
 
 //FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
@@ -75,7 +78,22 @@ public class NetworkManager {
 
 	public void registerTerminal(String type, String key,
 			String client, String state) 
-			throws IllegalArgumentException, UnknownClientKeyException {
+			throws IllegalArgumentException,
+			UnknownClientKeyException, DuplicateTerminalKeyException {
 
-		this._network.registerTerminal(type, id, client, state);
+		this._network.registerTerminal(type, key, client, state);
 	}
+
+	void registerClient(String key, String name, int taxId) 
+			throws DuplicateClientKeyException {
+
+		this._network.registerClient(key, name, taxId);
+	}
+
+	
+	void addFriend(String terminalKey, String friendKey) 
+			throws UnknownTerminalKeyException {
+
+		this._network.addFriend(terminalKey, friendKey);
+	}
+}

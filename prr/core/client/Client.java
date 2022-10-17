@@ -41,6 +41,16 @@ public class Client implements Serializable {
 		this._status = new NormalClientStatus(); // default
 	}
 
+	public String getKey() {
+		return this._key;
+	}
+	public String getName() {
+		return this._name;
+	}
+	public int getTaxId() {
+		return this._taxId;
+	}
+
 	public void addTerminal(Terminal terminal, String terminalKey) {
 		this._terminals.put(terminalKey, terminal);
 	}

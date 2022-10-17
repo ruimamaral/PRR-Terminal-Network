@@ -1,4 +1,4 @@
-package prr.core.util;
+package prr.util;
 
 import java.util.Comparator;
 import java.io.Serial;

@@ -3,8 +3,8 @@ package prr.core.terminal;
 import prr.core.client.Client;
 
 import java.io.Serializable;
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.Map;
+import java.util.TreeMap;
 import java.io.Serial;
 
 // FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
@@ -23,7 +23,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 
 	private TerminalState _state;
 
-	private Set<String> _friends = new TreeSet<String>();
+	private Map<String, Terminal> _friends = new TreeMap<String, Terminal>();
 
 	// Class that manages terminal state dependent functionalities.
 	public abstract class TerminalState implements Serializable { // maybe set private
@@ -82,9 +82,13 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 		try {
 			Integer.parseInt(key);
 		} catch (NumberFormatException e) {
-			throw new IllegalArgumentException(e);
+			throw new IllegalArgumentException();
 		}
 		return key;
+	}
+
+	public void addFriend(Terminal friend) {
+		this._friends.put(friend.getKey(), friend);
 	}
 
 

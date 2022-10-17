@@ -9,6 +9,7 @@ import prr.core.terminal.BasicTerminal;
 import prr.core.terminal.FancyTerminal;
 import prr.core.terminal.Terminal;
 import prr.core.exception.DuplicateTerminalKeyException;
+import prr.core.exception.DuplicateClientKeyException;
 import prr.core.client.Client;
 import prr.core.exception.UnknownClientKeyException;
 import prr.core.exception.UnknownTerminalKeyException;
@@ -46,7 +47,6 @@ public class Network implements Serializable {
 	void registerTerminal(String type, String key, String client, String state)
 			throws IllegalArgumentException, UnknownClientKeyException,
 			DuplicateTerminalKeyException {
-
 		Terminal newTerm;
 		Terminal.checkKey(key);
 		Client owner = this.getClient(client);
@@ -98,6 +98,32 @@ public class Network implements Serializable {
 		} else {
 			this._terminals.put(key, terminal);
 		}
+	}
+
+	void addClient(Client client) throws DuplicateClientKeyException {
+		String key = client.getKey();
+
+		if (this._clients.keySet().contains(key)) {
+			throw new DuplicateClientKeyException();
+		} else {
+			this._clients.put(key, client);
+		}
+	}
+
+	void registerClient(String key, String name, int taxId) 
+			throws DuplicateClientKeyException {
+		Client newClient = new Client(key, name, taxId);
+
+		this.addClient(newClient);
+	}
+
+	void addFriend(String terminalKey, String friendKey) 
+			throws UnknownTerminalKeyException {
+		Terminal terminal = getTerminal(terminalKey);
+		Terminal friend = getTerminal(friendKey);
+
+		terminal.addFriend(friend);
+		// friend.addFriend(terminal); apparently not true
 	}
 
 }

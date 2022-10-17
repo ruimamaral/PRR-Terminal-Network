@@ -9,8 +9,10 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import prr.core.exception.UnrecognizedEntryException;
+import prr.core.exception.DuplicateTerminalKeyException;
 import prr.core.exception.UnknownClientKeyException;
 // import more exception core classes if needed
+import prr.core.exception.UnknownTerminalKeyException;
 
 /* 
  * A concretização desta classe depende da funcionalidade suportada pelas entidades do core:
@@ -74,7 +76,9 @@ public class Parser {
     try {
       this._networkManager.registerTerminal(
           components[0], components[1], components[2], components[3]);
-    } catch (IllegalArgumentException | UnknownClientKeyException e) {
+    } catch (IllegalArgumentException
+			| UnknownClientKeyException 
+			| DuplicateTerminalKeyException e) {
 		throw new UnrecognizedEntryException("Invalid specification: " + line, e);
     }
   }
@@ -84,13 +88,13 @@ public class Parser {
     checkComponentsLength(components, 3, line);
       
     try {
-      String terminalId = components[1];
+      String terminalKey = components[1];
       String[] friends = components[2].split(",");
       
-      for (String friendId : friends)
-        this._networkManager.addFriend(terminalId, friendId);
-    } catch (OtherException e) {
-      throw new UnrecognizedEntryException("Some message error in line:  " + line, e);
+      for (String friendKey : friends)
+        this._networkManager.addFriend(terminalKey, friendKey);
+    } catch (UnknownTerminalKeyException e) {
+      throw new UnrecognizedEntryException("Some message error in line:  " + line, e); // FIXME add terminal id
     }
   }
 }
