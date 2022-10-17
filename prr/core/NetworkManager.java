@@ -73,11 +73,9 @@ public class NetworkManager {
 		}
 	}  
 
-	public void registerTerminal(String type, String id,
+	public void registerTerminal(String type, String key,
 			String client, String state) 
 			throws IllegalArgumentException, UnknownClientKeyException {
 
 		this._network.registerTerminal(type, id, client, state);
-
-
-}
+	}

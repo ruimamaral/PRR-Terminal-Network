@@ -1,5 +1,7 @@
 package prr.core.terminal;
 
+import prr.core.client.Client;
+
 import java.io.Serializable;
 import java.util.Set;
 import java.util.TreeSet;
@@ -15,7 +17,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 	@Serial
 	private static final long serialVersionUID = 202210161925L;
 
-	private int _id;
+	private String _key;
 
 	private Client _client;
 
@@ -47,10 +49,14 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 		abstract boolean canEndCurrentCommunication();
 	}
 
-	public Terminal(int id, Client client) {
+	public Terminal(String key, Client client) {
 		this._client = client;
-		this._id = id;
+		this._key = key;
 		this._state = new IdleTerminalState();
+	}
+
+	public String getKey() {
+		return this._key;
 	}
 
 	public void turnOff() {
@@ -67,6 +73,18 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 
 	public void setSilence() {
 		this._state.setSilence();
+	}
+
+	public static String checkKey(String key) {
+		if (key.length() != 6) {
+			throw new IllegalArgumentException();
+		}
+		try {
+			Integer.parseInt(key);
+		} catch (NumberFormatException e) {
+			throw new IllegalArgumentException(e);
+		}
+		return key;
 	}
 
 

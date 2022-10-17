@@ -58,8 +58,8 @@ public class Parser {
     checkComponentsLength(components, 4, line);
 
     try {
-      int taxNumber = Integer.parseInt(components[3]);
-      this._networkManager.registerClient(components[1], components[2], taxNumber);
+      int taxId = Integer.parseInt(components[3]);
+      this._networkManager.registerClient(components[1], components[2], taxId);
     } catch (NumberFormatException nfe) {
       throw new UnrecognizedEntryException("Invalid number in line " + line, nfe);
     } catch (OtherException e) {
@@ -74,15 +74,6 @@ public class Parser {
     try {
       this._networkManager.registerTerminal(
           components[0], components[1], components[2], components[3]);
-
-      switch(components[3]) {
-        case "SILENCE" -> terminal.setSilent();
-        case "OFF" -> terminal.turnOff();
-        default -> {
-         if (!components[3].equals("ON"))
-           throw new UnrecognizedEntryException("Invalid specification in line: " + line);
-        } 
-      }
     } catch (IllegalArgumentException | UnknownClientKeyException e) {
 		throw new UnrecognizedEntryException("Invalid specification: " + line, e);
     }

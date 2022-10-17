@@ -1,9 +1,11 @@
 package prr.core.terminal;
 
+import prr.core.client.Client;
+
 public class BasicTerminal extends Terminal {
 
-	public BasicTerminal(int id, Client client) {
-		super(id, client);
+	public BasicTerminal(String key, Client client) {
+		super(key, client);
 	}
 
 	@Override

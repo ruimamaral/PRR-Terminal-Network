@@ -11,7 +11,7 @@ public class UnknownClientKeyException extends Exception {
 	@Serial
 	private static final long serialVersionUID = 202208091753L;
 
-	private static final String ERROR_MESSAGE = "ID não corresponde a nenhum cliente: ";
+	private static final String ERROR_MESSAGE = "ID não corresponde a nenhum cliente: "; // FIXME sera que e necessaria mensagem?
 
 	/**
 	 * @param client client key
