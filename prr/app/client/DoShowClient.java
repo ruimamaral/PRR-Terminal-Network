@@ -11,13 +11,15 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoShowClient extends Command<Network> {
 
-  DoShowClient(Network receiver) {
-    super(Label.SHOW_CLIENT, receiver);
-    //FIXME add command fields
-  }
+	DoShowClient(Network receiver) {
+		super(Label.SHOW_CLIENT, receiver);
+		addStringField("clientKey", Message.key());
+	}
   
-  @Override
-  protected final void execute() throws CommandException {
-    //FIXME implement command
-  }
+	@Override
+	protected final void execute() throws CommandException {
+		String key = stringField("clientKey");
+		CLient client = super._receiver.getClient(key);
+	}
+
 }

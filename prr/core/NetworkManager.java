@@ -9,6 +9,7 @@ import prr.core.exception.ImportFileException;
 import prr.core.exception.MissingFileAssociationException;
 import prr.core.exception.UnavailableFileException;
 import prr.core.exception.UnrecognizedEntryException;
+import prr.util.Visitor;
 import prr.core.exception.UnknownClientKeyException;
 import prr.core.exception.UnknownTerminalKeyException;
 
@@ -95,5 +96,9 @@ public class NetworkManager {
 			throws UnknownTerminalKeyException {
 
 		this._network.addFriend(terminalKey, friendKey);
+	}
+
+	Visitor<String> getStringMaker() {
+		
 	}
 }
