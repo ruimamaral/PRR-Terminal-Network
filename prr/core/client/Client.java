@@ -23,8 +23,12 @@ public class Client implements Serializable, Visitable {
 	private ClientStatus _status;
 
 	private boolean _notificationsOn;
-	
+
 	private Map<String, Terminal> _terminals = new TreeMap<String, Terminal>();
+
+	private int _totalPaid;
+
+	private int _debt;
 
 
 	public abstract class ClientStatus implements Serializable {
@@ -32,6 +36,9 @@ public class Client implements Serializable, Visitable {
 		@Serial
 		private static final long serialVersionUID = 202210161323L;
 
+		public abstract String getName();
+
+		// FIXME define changeStatus
 		public void changeStatus() {} 
 	}
 
@@ -52,6 +59,22 @@ public class Client implements Serializable, Visitable {
 	public int getTaxId() {
 		return this._taxId;
 	}
+	public boolean hasNotificationsEnabled() {
+		return this._notificationsOn;
+	}
+	public String getStatusName() {
+		return this._status.getName();
+	}
+	public int getTerminalCount() {
+		return this._terminals.size();
+	}
+	public int getTotalPaid() {
+		return this._totalPaid;
+	}
+	public int getDebt() {
+		return this._debt;
+	}
+
 
 	public void addTerminal(Terminal terminal, String terminalKey) {
 		this._terminals.put(terminalKey, terminal);

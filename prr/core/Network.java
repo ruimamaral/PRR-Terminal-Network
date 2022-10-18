@@ -1,6 +1,7 @@
 package prr.core;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -8,6 +9,7 @@ import prr.core.exception.UnrecognizedEntryException;
 import prr.core.terminal.BasicTerminal;
 import prr.core.terminal.FancyTerminal;
 import prr.core.terminal.Terminal;
+import prr.util.Visitor;
 import prr.core.exception.DuplicateTerminalKeyException;
 import prr.core.exception.DuplicateClientKeyException;
 import prr.core.client.Client;
@@ -124,6 +126,14 @@ public class Network implements Serializable {
 
 		terminal.addFriend(friend);
 		// friend.addFriend(terminal); apparently not true
+	}
+
+	public <T> void visitAllClients(Visitor<T> visitor) {
+		Collection<Client> clientCollection = this._clients.values();
+
+		for (Client client : clientCollection)  {
+			client.accept(visitor);
+		}
 	}
 
 }
