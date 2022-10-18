@@ -44,7 +44,7 @@ public class Network implements Serializable {
 	 * @throws IllegalArgumentException
 	 * @throws UnknownClientKeyException
 	 */
-	void registerTerminal(String type, String key, String client, String state)
+	public void registerTerminal(String type, String key, String client, String state)
 			throws IllegalArgumentException, UnknownClientKeyException,
 			DuplicateTerminalKeyException {
 		Terminal newTerm;
@@ -61,7 +61,7 @@ public class Network implements Serializable {
 		owner.addTerminal(newTerm, key);
 	}
 
-	void setTerminalState(Terminal terminal, String state)
+	 private void setTerminalState(Terminal terminal, String state)
 			throws IllegalArgumentException {
 
 		switch(state) {
@@ -72,7 +72,7 @@ public class Network implements Serializable {
 		}
 	}
 
-	Client getClient(String key) throws UnknownClientKeyException {
+	public Client getClient(String key) throws UnknownClientKeyException {
 		Client client = this._clients.get(key);
 
 		if (client == null) {
@@ -81,7 +81,7 @@ public class Network implements Serializable {
 		return client;
 	}
 
-	Terminal getTerminal(String key) throws UnknownTerminalKeyException {
+	public Terminal getTerminal(String key) throws UnknownTerminalKeyException {
 		Terminal terminal = this._terminals.get(key);
 
 		if (terminal == null) {
@@ -90,7 +90,7 @@ public class Network implements Serializable {
 		return terminal;
 	}
 
-	void addTerminal(Terminal terminal)  throws DuplicateTerminalKeyException {
+	public void addTerminal(Terminal terminal)  throws DuplicateTerminalKeyException {
 		String key = terminal.getKey();
 
 		if (this._terminals.keySet().contains(key)) {
@@ -100,7 +100,7 @@ public class Network implements Serializable {
 		}
 	}
 
-	void addClient(Client client) throws DuplicateClientKeyException {
+	public void addClient(Client client) throws DuplicateClientKeyException {
 		String key = client.getKey();
 
 		if (this._clients.keySet().contains(key)) {
@@ -110,14 +110,14 @@ public class Network implements Serializable {
 		}
 	}
 
-	void registerClient(String key, String name, int taxId) 
+	public void registerClient(String key, String name, int taxId) 
 			throws DuplicateClientKeyException {
 		Client newClient = new Client(key, name, taxId);
 
 		this.addClient(newClient);
 	}
 
-	void addFriend(String terminalKey, String friendKey) 
+	public void addFriend(String terminalKey, String friendKey) 
 			throws UnknownTerminalKeyException {
 		Terminal terminal = getTerminal(terminalKey);
 		Terminal friend = getTerminal(friendKey);

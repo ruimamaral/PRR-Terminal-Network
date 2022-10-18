@@ -6,8 +6,10 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import prr.core.terminal.Terminal;
+import prr.util.Visitable;
+import prr.util.Visitor;
 
-public class Client implements Serializable {
+public class Client implements Serializable, Visitable {
 
 	@Serial
 	private static final long serialVersionUID = 202210161323L;
@@ -53,5 +55,9 @@ public class Client implements Serializable {
 
 	public void addTerminal(Terminal terminal, String terminalKey) {
 		this._terminals.put(terminalKey, terminal);
+	}
+
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
 	}
 }

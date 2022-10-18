@@ -25,6 +25,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 
 	private Map<String, Terminal> _friends = new TreeMap<String, Terminal>();
 
+	private boolean _isActive;
+
 	// Class that manages terminal state dependent functionalities.
 	public abstract class TerminalState implements Serializable { // maybe set private
 
@@ -53,6 +55,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 		this._client = client;
 		this._key = key;
 		this._state = new IdleTerminalState();
+		this._isActive = false;
 	}
 
 	public String getKey() {
@@ -91,6 +94,15 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 		this._friends.put(friend.getKey(), friend);
 	}
 
+	// FIXME
+	public void startInteractiveCommunication() {
+		this._isActive = true;
+	}
+
+	// FIXME
+	public void receiveInteractiveCommunication() {
+		this._isActive = true;
+	}
 
 
 	/**

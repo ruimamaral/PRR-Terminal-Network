@@ -24,10 +24,10 @@ import prr.core.exception.UnknownTerminalKeyException;
  */
 
 public class Parser {
-  private NetworkManager _networkManager;
+  private Network _network;
 
-  Parser(NetworkManager networkManager) {
-    this._networkManager = networkManager;
+  Parser(Network network) {
+    this._network = network;
   }
 
   public void parseFile(String filename) throws IOException, UnrecognizedEntryException {
@@ -61,7 +61,7 @@ public class Parser {
 
     try {
       int taxId = Integer.parseInt(components[3]);
-      this._networkManager.registerClient(components[1], components[2], taxId);
+      this._network.registerClient(components[1], components[2], taxId);
     } catch (NumberFormatException nfe) {
       throw new UnrecognizedEntryException("Invalid number in line " + line, nfe);
     } catch (OtherException e) {
@@ -74,7 +74,7 @@ public class Parser {
     checkComponentsLength(components, 4, line);
 
     try {
-      this._networkManager.registerTerminal(
+      this._network.registerTerminal(
           components[0], components[1], components[2], components[3]);
     } catch (IllegalArgumentException
 			| UnknownClientKeyException 
@@ -92,7 +92,7 @@ public class Parser {
       String[] friends = components[2].split(",");
       
       for (String friendKey : friends)
-        this._networkManager.addFriend(terminalKey, friendKey);
+        this._network.addFriend(terminalKey, friendKey);
     } catch (UnknownTerminalKeyException e) {
       throw new UnrecognizedEntryException("Some message error in line:  " + line, e); // FIXME add terminal id
     }

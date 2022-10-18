@@ -22,6 +22,7 @@ public class NetworkManager {
 
 	/** The network itself. */
 	private Network _network = new Network();
+	private String _filename;
 	//FIXME  addmore fields if needed
 
 	public Network getNetwork() {
@@ -69,36 +70,11 @@ public class NetworkManager {
 	 * @throws ImportFileException
 	 */
 	public void importFile(String filename) throws ImportFileException {
-		Parser parser = new Parser(this);
+		Parser parser = new Parser(this._network);
 	try {
 		parser.parseFile(filename);
 		} catch (IOException | UnrecognizedEntryException /* FIXME maybe other exceptions */ e) {
 			throw new ImportFileException(filename, e);
 		}
 	}  
-
-	public void registerTerminal(String type, String key,
-			String client, String state) 
-			throws IllegalArgumentException,
-			UnknownClientKeyException, DuplicateTerminalKeyException {
-
-		this._network.registerTerminal(type, key, client, state);
-	}
-
-	void registerClient(String key, String name, int taxId) 
-			throws DuplicateClientKeyException {
-
-		this._network.registerClient(key, name, taxId);
-	}
-
-	
-	void addFriend(String terminalKey, String friendKey) 
-			throws UnknownTerminalKeyException {
-
-		this._network.addFriend(terminalKey, friendKey);
-	}
-
-	Visitor<String> getStringMaker() {
-		
-	}
 }
