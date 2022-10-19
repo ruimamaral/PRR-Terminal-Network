@@ -26,9 +26,9 @@ public class Client implements Serializable, Visitable {
 
 	private Map<String, Terminal> _terminals = new TreeMap<String, Terminal>();
 
-	private int _totalPaid;
+	private double _totalPaid;
 
-	private int _debt;
+	private double _debt;
 
 
 	public abstract class ClientStatus implements Serializable {
@@ -52,6 +52,10 @@ public class Client implements Serializable, Visitable {
 		this._totalPaid = 0;
 	}
 
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
+	}
+
 	public String getKey() {
 		return this._key;
 	}
@@ -71,18 +75,14 @@ public class Client implements Serializable, Visitable {
 		return this._terminals.size();
 	}
 	public int getTotalPaid() {
-		return this._totalPaid;
+		return (int) Math.round(this._totalPaid);
 	}
 	public int getDebt() {
-		return this._debt;
+		return (int) Math.round(this._debt);
 	}
 
 
 	public void addTerminal(Terminal terminal, String terminalKey) {
 		this._terminals.put(terminalKey, terminal);
-	}
-
-	public <T> T accept(Visitor<T> visitor) {
-		return visitor.visit(this);
 	}
 }

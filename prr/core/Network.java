@@ -9,6 +9,7 @@ import prr.core.exception.UnrecognizedEntryException;
 import prr.core.terminal.BasicTerminal;
 import prr.core.terminal.FancyTerminal;
 import prr.core.terminal.Terminal;
+import prr.util.Visitable;
 import prr.util.Visitor;
 import prr.core.exception.DuplicateTerminalKeyException;
 import prr.core.exception.DuplicateClientKeyException;
@@ -119,12 +120,20 @@ public class Network implements Serializable {
 		// friend.addFriend(terminal); apparently not true
 	}
 
-	public <T> void visitAllClients(Visitor<T> visitor) {
-		Collection<Client> clientCollection = this._clients.values();
+	public <T> void visitAll(Visitor<T> visitor, Collection<? extends Visitable> col) {
 
-		for (Client client : clientCollection)  {
-			client.accept(visitor);
+		for (Visitable element : col) {
+			element.accept(visitor);
 		}
+
+	}
+
+	public Collection<Client> getAlClients() {
+		return this._clients.values();
+	}
+
+	public Collection<Terminal> getTerminals() {
+		return this._terminals.values();
 	}
 
 	public int getClientCount() {

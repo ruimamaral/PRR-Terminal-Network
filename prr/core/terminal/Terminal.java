@@ -1,6 +1,8 @@
 package prr.core.terminal;
 
 import prr.core.client.Client;
+import prr.util.Visitable;
+import prr.util.Visitor;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -12,7 +14,7 @@ import java.io.Serial;
 /**
  * Abstract terminal.
  */
-abstract public class Terminal implements Serializable /* FIXME maybe add more interfaces */{
+abstract public class Terminal implements Serializable, Visitable {
 
 	@Serial
 	private static final long serialVersionUID = 202210161925L;
@@ -27,8 +29,12 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 
 	private boolean _isActive;
 
+	private double _totalPaid;
+
+	private double _debt;
+
 	// Class that manages terminal state dependent functionalities.
-	public abstract class TerminalState implements Serializable { // maybe set private
+	public abstract class TerminalState implements Serializable {
 
 		void setState(TerminalState state) {
 			Terminal.this._state = state;
@@ -61,8 +67,25 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 		this._isActive = false;
 	}
 
+	@Override
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
+	}
+
 	public String getKey() {
 		return this._key;
+	}
+
+	public int getTotalPaid() {
+		return (int) Math.round(this._totalPaid);
+	}
+
+	public int getDebt() {
+		return (int) Math.round(this._debt);
+	}
+
+	public boolean hasActivity() {
+		return this._isActive;
 	}
 
 	public void turnOff() {

@@ -7,7 +7,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.text.Collator;
 /*
- * Case-insensitive String comparator.
+ * Case-insensitive String comparator. Serializable Collator wrapper.
  */
 public class StringComparator implements Comparator<String>, Serializable {
 
