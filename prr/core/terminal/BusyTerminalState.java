@@ -11,7 +11,10 @@ public class BusyTerminalState extends Terminal.TerminalState {
 	// FIXME add more functionality.
 
 	@Override
-	void setBusy() {
+	void setBusy() {}
+
+	String getStateName() {
+		return "BUSY";
 	}
 
 	boolean canStartCommunication() {

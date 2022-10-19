@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import prr.core.exception.UnrecognizedEntryException;
+import prr.core.terminal.Terminal;
 import prr.core.exception.DuplicateClientKeyException;
 import prr.core.exception.DuplicateTerminalKeyException;
 import prr.core.exception.UnknownClientKeyException;
@@ -71,18 +72,24 @@ public class Parser {
   }
 
   // parse a line with format terminal-type|idTerminal|idClient|state
-  private void parseTerminal(String[] components, String line) throws UnrecognizedEntryException {
-    checkComponentsLength(components, 4, line);
+	private void parseTerminal(String[] components, String line) throws UnrecognizedEntryException {
+		checkComponentsLength(components, 4, line);
 
-    try {
-      this._network.registerTerminal(
-          components[0], components[1], components[2], components[3]);
-    } catch (IllegalArgumentException
-			| UnknownClientKeyException 
-			| DuplicateTerminalKeyException e) {
+		try {
+			Terminal newTerm = this._network.registerTerminal(
+				components[0], components[1], components[2]);
+			switch(components[3]) {
+				case "ON" -> newTerm.setIdle();
+				case "OFF" -> newTerm.turnOff();
+				case "SILENCE" -> newTerm.setSilence();
+				default -> throw new IllegalArgumentException();
+			}
+		} catch (IllegalArgumentException
+				| UnknownClientKeyException 
+				| DuplicateTerminalKeyException e) {
 		throw new UnrecognizedEntryException("Invalid specification: " + line, e);
-    }
-  }
+	}
+}
 
   //Parse a line with format FRIENDS|idTerminal|idTerminal1,...,idTerminalN
   private void parseFriends(String[] components, String line) throws UnrecognizedEntryException {

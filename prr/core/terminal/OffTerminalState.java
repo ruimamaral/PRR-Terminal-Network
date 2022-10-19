@@ -10,7 +10,10 @@ public class OffTerminalState extends Terminal.TerminalState {
 	// FIXME add more functionality.
 
 	@Override
-	void turnOff() {
+	void turnOff() {}
+
+	String getStateName() {
+		return "OFF";
 	}
 
 	boolean canStartCommunication() {

@@ -10,7 +10,10 @@ public class IdleTerminalState extends Terminal.TerminalState {
 	// FIXME add more functionality.
 
 	@Override
-	void setIdle() {
+	void setIdle() {}
+
+	String getStateName() {
+		return "IDLE";
 	}
 
 	boolean canStartCommunication() {

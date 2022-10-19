@@ -33,6 +33,7 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 		void setState(TerminalState state) {
 			Terminal.this._state = state;
 		}
+
 		void turnOff() {
 			setState(new OffTerminalState());
 		}
@@ -45,6 +46,8 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 		void setSilence() {
 			setState(new SilenceTerminalState());
 		}
+
+		abstract String getStateName();
 
 		abstract boolean canStartCommunication();
 
@@ -107,18 +110,18 @@ abstract public class Terminal implements Serializable /* FIXME maybe add more i
 
 	/**
 	 * Checks if this terminal can end the current interactive communication.
- 	 *
- 	 * @return true if this terminal is busy (i.e., it has an active interactive communication) and
- 	 *          it was the originator of this communication.
+	 *
+	 * @return true if this terminal is busy (i.e., it has an active interactive communication) and
+	 *          it was the originator of this communication.
 	 **/
 	public boolean canEndCurrentCommunication() {
 		return this._state.canEndCurrentCommunication();
 	}
   
 	/**
- 	 * Checks if this terminal can start a new communication.
- 	 *
- 	 * @return true if this terminal is neither off neither busy, false otherwise.
+	 * Checks if this terminal can start a new communication.
+	 *
+	 * @return true if this terminal is neither off neither busy, false otherwise.
 	 **/
 	public boolean canStartCommunication() {
 		return this._state.canStartCommunication();

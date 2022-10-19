@@ -46,7 +46,7 @@ public class Network implements Serializable {
 	 * @throws IllegalArgumentException
 	 * @throws UnknownClientKeyException
 	 */
-	public void registerTerminal(String type, String key, String client, String state)
+	public Terminal registerTerminal(String type, String key, String client)
 			throws IllegalArgumentException, UnknownClientKeyException,
 			DuplicateTerminalKeyException {
 		Terminal newTerm;
@@ -58,20 +58,9 @@ public class Network implements Serializable {
 			case "FANCY" -> newTerm = new FancyTerminal(key, owner);
 			default -> throw new IllegalArgumentException();
 		}
-		this.setTerminalState(newTerm, state);
 		this.addTerminal(newTerm);
 		owner.addTerminal(newTerm, key);
-	}
-
-	 private void setTerminalState(Terminal terminal, String state)
-			throws IllegalArgumentException {
-
-		switch(state) {
-			case "IDLE" -> terminal.setIdle();
-			case "OFF" -> terminal.turnOff();
-			case "SILENCE" -> terminal.setSilence();
-			default -> throw new IllegalArgumentException();
-		}
+		return newTerm;
 	}
 
 	public Client getClient(String key) throws UnknownClientKeyException {
@@ -92,7 +81,8 @@ public class Network implements Serializable {
 		return terminal;
 	}
 
-	public void addTerminal(Terminal terminal)  throws DuplicateTerminalKeyException {
+	public void addTerminal(Terminal terminal)  
+			throws DuplicateTerminalKeyException {
 		String key = terminal.getKey();
 
 		if (this._terminals.keySet().contains(key)) {
@@ -112,11 +102,12 @@ public class Network implements Serializable {
 		}
 	}
 
-	public void registerClient(String key, String name, int taxId) 
+	public Client registerClient(String key, String name, int taxId) 
 			throws DuplicateClientKeyException {
 		Client newClient = new Client(key, name, taxId);
 
 		this.addClient(newClient);
+		return newClient;
 	}
 
 	public void addFriend(String terminalKey, String friendKey) 
@@ -134,6 +125,14 @@ public class Network implements Serializable {
 		for (Client client : clientCollection)  {
 			client.accept(visitor);
 		}
+	}
+
+	public int getClientCount() {
+		return this._clients.size();
+	}
+
+	public int getTerminalCount() {
+		return this._terminals.size();
 	}
 
 }

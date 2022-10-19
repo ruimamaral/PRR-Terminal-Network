@@ -3,7 +3,7 @@ package prr.app.terminal;
 import java.util.function.Predicate;
 
 import prr.core.Network;
-import prr.core.Terminal;
+import prr.core.terminal.Terminal;
 import pt.tecnico.uilib.menus.Command;
 
 /**

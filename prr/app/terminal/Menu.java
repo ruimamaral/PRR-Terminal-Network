@@ -1,7 +1,7 @@
 package prr.app.terminal;
 
 import prr.core.Network;
-import prr.core.Terminal;
+import prr.core.terminal.Terminal;
 
 /**
  * Terminal console menu.

@@ -10,7 +10,10 @@ public class SilenceTerminalState extends Terminal.TerminalState {
 	// FIXME add more functionality.
 
 	@Override
-	void setSilence() {
+	void setSilence() {}
+
+	String getStateName() {
+		return "SILENCE";
 	}
 
 	boolean canStartCommunication() {
