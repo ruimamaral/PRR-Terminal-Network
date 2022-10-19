@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.ArrayList;
 
 import prr.core.exception.UnrecognizedEntryException;
+import prr.core.exception.DuplicateClientKeyException;
 import prr.core.exception.DuplicateTerminalKeyException;
 import prr.core.exception.UnknownClientKeyException;
 // import more exception core classes if needed
@@ -64,7 +65,7 @@ public class Parser {
       this._network.registerClient(components[1], components[2], taxId);
     } catch (NumberFormatException nfe) {
       throw new UnrecognizedEntryException("Invalid number in line " + line, nfe);
-    } catch (OtherException e) {
+    } catch (DuplicateClientKeyException e) {
       throw new UnrecognizedEntryException("Invalid specification in line: " + line, e);
     }
   }

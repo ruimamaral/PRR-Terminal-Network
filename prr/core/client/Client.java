@@ -48,6 +48,8 @@ public class Client implements Serializable, Visitable {
 		this._notificationsOn = true; // default
 		this._taxId = taxId;
 		this._status = new NormalClientStatus(); // default
+		this._debt = 0;
+		this._totalPaid = 0;
 	}
 
 	public String getKey() {

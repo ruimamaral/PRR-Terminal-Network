@@ -1,6 +1,8 @@
 package prr.app.client;
 
 import prr.core.Network;
+import prr.util.StringMaker;
+import prr.util.Visitor;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 //FIXME add more imports if needed
@@ -10,12 +12,16 @@ import pt.tecnico.uilib.menus.CommandException;
  */
 class DoShowAllClients extends Command<Network> {
 
-  DoShowAllClients(Network receiver) {
-    super(Label.SHOW_ALL_CLIENTS, receiver);
-  }
+	DoShowAllClients(Network receiver) {
+		super(Label.SHOW_ALL_CLIENTS, receiver);
+	}
   
-  @Override
-  protected final void execute() throws CommandException {
-    //FIXME implement command
-  }
+	final Visitor<Void> stringMaker = new StringMaker();
+
+	@Override
+	protected final void execute() throws CommandException {
+
+		super._receiver.visitAllClients(stringMaker);
+		super._display.popup(stringMaker.toString());
+	}
 }
