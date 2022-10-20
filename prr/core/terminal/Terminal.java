@@ -135,12 +135,12 @@ abstract public class Terminal implements Serializable, Visitable {
 	 * Checks if this terminal can end the current interactive communication.
 	 *
 	 * @return true if this terminal is busy (i.e., it has an active interactive communication) and
-	 *          it was the originator of this communication.
+	 *					it was the originator of this communication.
 	 **/
 	public boolean canEndCurrentCommunication() {
 		return this._state.canEndCurrentCommunication();
 	}
-  
+	
 	/**
 	 * Checks if this terminal can start a new communication.
 	 *

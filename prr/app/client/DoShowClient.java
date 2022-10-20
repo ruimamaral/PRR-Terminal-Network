@@ -19,7 +19,7 @@ class DoShowClient extends Command<Network> {
 	}
 
 	final Visitor<Void> stringMaker = new StringMaker();
-  
+	
 	@Override
 	protected final void execute() throws CommandException {
 		String key = stringField("clientKey");

@@ -15,7 +15,7 @@ class DoShowAllClients extends Command<Network> {
 	DoShowAllClients(Network receiver) {
 		super(Label.SHOW_ALL_CLIENTS, receiver);
 	}
-  
+	
 	final Visitor<Void> stringMaker = new StringMaker();
 
 	@Override
