@@ -1,9 +1,11 @@
 package prr.core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 
 import prr.core.exception.UnrecognizedEntryException;
 import prr.core.terminal.BasicTerminal;
@@ -80,6 +82,22 @@ public class Network implements Serializable {
 		return terminal;
 	}
 
+	public Collection<Client> getAllClients() {
+		return this._clients.values();
+	}
+
+	public Collection<Terminal> getAllTerminals() {
+		return this._terminals.values();
+	}
+
+	public int getClientCount() {
+		return this._clients.size();
+	}
+
+	public int getTerminalCount() {
+		return this._terminals.size();
+	}
+
 	private void addTerminal(Terminal terminal)
 			throws DuplicateTerminalKeyException {
 		String key = terminal.getKey();
@@ -110,35 +128,27 @@ public class Network implements Serializable {
 	}
 
 	public void addFriend(String terminalKey, String friendKey) 
-			throws UnknownTerminalKeyException {
+			throws UnknownTerminalKeyException, IllegalArgumentException {
+		if (terminalKey.equals(friendKey)) {
+			throw new IllegalArgumentException();
+		}
 		Terminal terminal = getTerminal(terminalKey);
 		Terminal friend = getTerminal(friendKey);
 
 		terminal.addFriend(friend);
 	}
 
-	public <T> void visitAll(Visitor<T> visitor, Collection<? extends Visitable> col) {
+	public <T> void visitAll(Visitor<T> visitor,
+			Collection<? extends Visitable> col,
+			Predicate<Visitable> valid) {
 
 		for (Visitable element : col) {
-			element.accept(visitor);
+			if (valid.test(element)) {
+				element.accept(visitor);
+			}
 		}
 	}
 
-	public Collection<Client> getAlClients() {
-		return this._clients.values();
-	}
-
-	public Collection<Terminal> getTerminals() {
-		return this._terminals.values();
-	}
-
-	public int getClientCount() {
-		return this._clients.size();
-	}
-
-	public int getTerminalCount() {
-		return this._terminals.size();
-	}
 }
 
 

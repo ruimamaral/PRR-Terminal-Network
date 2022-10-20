@@ -6,7 +6,6 @@ import prr.util.Visitor;
 import prr.app.exception.UnknownClientKeyException;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add more imports if needed
 
 /**
  * Show specific client: also show previous notifications.
@@ -25,8 +24,8 @@ class DoShowClient extends Command<Network> {
 		String key = stringField("clientKey");
 
 		try {
-			super._display.popup(super._receiver.getClient(key)
-					.accept(stringMaker).toString());
+			_receiver.getClient(key).accept(stringMaker);
+			_display.popup(stringMaker);
 		} catch (prr.core.exception.UnknownClientKeyException e) {
 			throw new UnknownClientKeyException(key);
 		}

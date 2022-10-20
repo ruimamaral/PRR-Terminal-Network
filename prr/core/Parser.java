@@ -35,8 +35,9 @@ public class Parser {
 		try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
 			String line;
 			
-			while ((line = reader.readLine()) != null)
+			while ((line = reader.readLine()) != null) {
 				parseLine(line);
+			}
 		}
 	}
 	
@@ -100,8 +101,8 @@ public class Parser {
 			
 			for (String friendKey : friends)
 				this._network.addFriend(terminalKey, friendKey);
-		} catch (UnknownTerminalKeyException e) {
-			throw new UnrecognizedEntryException("Some message error in line:	" + line, e); // FIXME fix message
+		} catch (UnknownTerminalKeyException | IllegalArgumentException e) {
+			throw new UnrecognizedEntryException("Invalid specification: " + line, e);
 		}
 	}
 }

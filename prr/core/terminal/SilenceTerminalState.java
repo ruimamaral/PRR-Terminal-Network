@@ -12,14 +12,17 @@ public class SilenceTerminalState extends Terminal.TerminalState {
 	@Override
 	void setSilence() {}
 
+	@Override
 	String getStateName() {
 		return "SILENCE";
 	}
 
+	@Override
 	boolean canStartCommunication() {
 		return false;
 	}
 
+	@Override
 	boolean canEndCurrentCommunication() {
 		return false;
 	}

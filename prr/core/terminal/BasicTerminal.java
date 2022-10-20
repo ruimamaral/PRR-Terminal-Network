@@ -1,11 +1,21 @@
 package prr.core.terminal;
 
+import java.io.Serial;
+
 import prr.core.client.Client;
 
 public class BasicTerminal extends Terminal {
 
+	@Serial
+	private static final long serialVersionUID = 202210161925L;
+
 	public BasicTerminal(String key, Client client) {
 		super(key, client);
+	}
+
+	@Override
+	public String getType() {
+		return "BASIC";
 	}
 
 	@Override

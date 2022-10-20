@@ -5,6 +5,7 @@ import prr.util.Visitable;
 import prr.util.Visitor;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Map;
 import java.util.TreeMap;
 import java.io.Serial;
@@ -70,34 +71,39 @@ abstract public class Terminal implements Serializable, Visitable {
 		return visitor.visit(this);
 	}
 
+	public abstract String getTypeName();
+
 	public String getKey() {
 		return this._key;
 	}
-
 	public int getTotalPaid() {
 		return (int) Math.round(this._totalPaid);
 	}
-
 	public int getDebt() {
 		return (int) Math.round(this._debt);
 	}
-
 	public boolean hasActivity() {
 		return this._isActive;
+	}
+	public String getClientKey() {
+		return this._client.getKey();
+	}
+	public String getStateName() {
+		return this._state.getStateName();
+	}
+	public Collection<String> getFriendKeys() {
+		return this._friends.keySet();
 	}
 
 	public void turnOff() {
 		this._state.turnOff();
 	}
-
 	public void setIdle() {
 		this._state.setIdle();
 	}
-
 	public void setBusy() {
 		this._state.setBusy();
 	}
-
 	public void setSilence() {
 		this._state.setSilence();
 	}
@@ -120,10 +126,12 @@ abstract public class Terminal implements Serializable, Visitable {
 
 	public void startInteractiveCommunication() {
 		this._isActive = true;
+		// FIXME
 	}
 
 	public void receiveInteractiveCommunication() {
 		this._isActive = true;
+		// FIXME
 	}
 
 

@@ -12,14 +12,17 @@ public class IdleTerminalState extends Terminal.TerminalState {
 	@Override
 	void setIdle() {}
 
+	@Override
 	String getStateName() {
 		return "IDLE";
 	}
 
+	@Override
 	boolean canStartCommunication() {
 		return true;
 	}
 
+	@Override
 	boolean canEndCurrentCommunication() {
 		return false;
 	}

@@ -21,8 +21,9 @@ class DoShowAllClients extends Command<Network> {
 	@Override
 	protected final void execute() throws CommandException {
 		if (_receiver.getClientCount() != 0) {
-			_receiver.visitAll(stringMaker, _receiver.getAlClients());
-			_display.popup(stringMaker.toString());
+			_receiver.visitAll(stringMaker,
+					_receiver.getAllClients(), client -> true);
+			_display.popup(stringMaker);
 		}
 	}
 }

@@ -12,14 +12,17 @@ public class OffTerminalState extends Terminal.TerminalState {
 	@Override
 	void turnOff() {}
 
+	@Override
 	String getStateName() {
 		return "OFF";
 	}
 
+	@Override
 	boolean canStartCommunication() {
 		return false;
 	}
 
+	@Override
 	boolean canEndCurrentCommunication() {
 		return false;
 	}

@@ -13,14 +13,17 @@ public class BusyTerminalState extends Terminal.TerminalState {
 	@Override
 	void setBusy() {}
 
+	@Override
 	String getStateName() {
 		return "BUSY";
 	}
 
+	@Override
 	boolean canStartCommunication() {
 		return false;
 	}
 
+	@Override
 	boolean canEndCurrentCommunication() {
 		// FIXME check if terminal is originator.
 		return true;

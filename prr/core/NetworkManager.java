@@ -40,7 +40,7 @@ public class NetworkManager {
 	 */
 	public void load(String filename) throws UnavailableFileException {
 		try (FileInputStream is = new FileInputStream(filename);
-			 	ObjectInputStream ois = new ObjectInputStream(is)) {
+			 		ObjectInputStream ois = new ObjectInputStream(is)) {
 			this._network = (Network) ois.readObject();
 			this._filename = filename;
 		} catch (IOException | ClassNotFoundException e) {
@@ -60,7 +60,9 @@ public class NetworkManager {
 			throw new MissingFileAssociationException();
 		} else {
 			try (FileOutputStream os = new FileOutputStream(this._filename);
-					ObjectOutputStream oos = new ObjectOutputStream(os);)
+						ObjectOutputStream oos = new ObjectOutputStream(os)) {
+				oos.writeObject(this._network);
+			}
 		}
 	}
 
@@ -74,7 +76,8 @@ public class NetworkManager {
 	 * @throws IOException if there is some error while serializing the state of the network to disk.
 	 */
 	public void saveAs(String filename) throws FileNotFoundException, MissingFileAssociationException, IOException {
-		//FIXME implement serialization method
+		this._filename = filename;
+		this.save();
 	}
 
 	/**
@@ -85,9 +88,9 @@ public class NetworkManager {
 	 */
 	public void importFile(String filename) throws ImportFileException {
 		Parser parser = new Parser(this._network);
-	try {
-		parser.parseFile(filename);
-		} catch (IOException | UnrecognizedEntryException /* FIXME maybe other exceptions */ e) {
+		try {
+			parser.parseFile(filename);
+		} catch (IOException | UnrecognizedEntryException e) {
 			throw new ImportFileException(filename, e);
 		}
 	}

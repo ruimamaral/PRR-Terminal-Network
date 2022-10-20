@@ -1,8 +1,8 @@
 package prr.app.terminals;
 
-import java.util.Collections;
-
 import prr.core.Network;
+import prr.util.StringMaker;
+import prr.util.Visitor;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 //FIXME add more imports if needed
@@ -16,8 +16,14 @@ class DoShowAllTerminals extends Command<Network> {
 		super(Label.SHOW_ALL_TERMINALS, receiver);
 	}
 
+	final Visitor<Void> stringMaker = new StringMaker();
+
 	@Override
 	protected final void execute() throws CommandException {
-		//FIXME implement command
+		if (_receiver.getClientCount() != 0) {
+			_receiver.visitAll(stringMaker,
+					_receiver.getAllTerminals(), terminal -> true);
+			_display.popup(stringMaker);
+		}
 	}
 }
