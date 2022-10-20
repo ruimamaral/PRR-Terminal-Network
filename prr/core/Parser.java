@@ -13,7 +13,6 @@ import prr.core.terminal.Terminal;
 import prr.core.exception.DuplicateClientKeyException;
 import prr.core.exception.DuplicateTerminalKeyException;
 import prr.core.exception.UnknownClientKeyException;
-// import more exception core classes if needed
 import prr.core.exception.UnknownTerminalKeyException;
 
 /* 
@@ -102,7 +101,7 @@ public class Parser {
 			for (String friendKey : friends)
 				this._network.addFriend(terminalKey, friendKey);
 		} catch (UnknownTerminalKeyException e) {
-			throw new UnrecognizedEntryException("Some message error in line:	" + line, e); // FIXME add terminal id
+			throw new UnrecognizedEntryException("Some message error in line:	" + line, e); // FIXME fix message
 		}
 	}
 }

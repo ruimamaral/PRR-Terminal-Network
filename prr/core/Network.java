@@ -80,7 +80,7 @@ public class Network implements Serializable {
 		return terminal;
 	}
 
-	public void addTerminal(Terminal terminal)
+	private void addTerminal(Terminal terminal)
 			throws DuplicateTerminalKeyException {
 		String key = terminal.getKey();
 
@@ -91,7 +91,7 @@ public class Network implements Serializable {
 		}
 	}
 
-	public void addClient(Client client) throws DuplicateClientKeyException {
+	private void addClient(Client client) throws DuplicateClientKeyException {
 		String key = client.getKey();
 
 		if (this._clients.keySet().contains(key)) {
