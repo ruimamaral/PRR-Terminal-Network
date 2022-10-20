@@ -138,11 +138,10 @@ public class Network implements Serializable {
 		terminal.addFriend(friend);
 	}
 
-	public <T> void visitAll(Visitor<T> visitor,
-			Collection<? extends Visitable> col,
-			Predicate<Visitable> valid) {
+	public <T, E extends Visitable> void visitAll(
+			Visitor<T> visitor, Collection<E> col, Predicate<E> valid) {
 
-		for (Visitable element : col) {
+		for (E element : col) {
 			if (valid.test(element)) {
 				element.accept(visitor);
 			}

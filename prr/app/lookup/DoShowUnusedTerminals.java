@@ -1,9 +1,10 @@
 package prr.app.lookup;
 
 import prr.core.Network;
+import prr.util.StringMaker;
+import prr.util.Visitor;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add more imports if needed
 
 /**
  * Show unused terminals (without communications).
@@ -14,8 +15,13 @@ class DoShowUnusedTerminals extends Command<Network> {
 		super(Label.SHOW_UNUSED_TERMINALS, receiver);
 	}
 
+	final Visitor<Void> stringMaker = new StringMaker();
+
 	@Override
 	protected final void execute() throws CommandException {
-		//FIXME implement command
+		if (_receiver.getClientCount() != 0) {
+			_receiver.visitAll(stringMaker,
+					_receiver.getAllTerminals(), term -> term.hasActivity());
+		}
 	}
 }
