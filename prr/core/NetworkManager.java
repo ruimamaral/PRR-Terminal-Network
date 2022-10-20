@@ -1,7 +1,11 @@
 package prr.core;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 
 import prr.core.exception.DuplicateClientKeyException;
 import prr.core.exception.DuplicateTerminalKeyException;
@@ -35,7 +39,13 @@ public class NetworkManager {
 	 * 		exist or there is an error while processing this file.
 	 */
 	public void load(String filename) throws UnavailableFileException {
-		//FIXME implement serialization method
+		try (FileInputStream is = new FileInputStream(filename);
+			 	ObjectInputStream ois = new ObjectInputStream(is)) {
+			this._network = (Network) ois.readObject();
+			this._filename = filename;
+		} catch (IOException | ClassNotFoundException e) {
+			throw new UnavailableFileException(filename);
+		}
 	}
 
 	/**
@@ -46,7 +56,12 @@ public class NetworkManager {
 	 * @throws IOException if there is some error while serializing the state of the network to disk.
 	 */
 	public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
-		//FIXME implement serialization method
+		if (this._filename == null) {
+			throw new MissingFileAssociationException();
+		} else {
+			try (FileOutputStream os = new FileOutputStream(this._filename);
+					ObjectOutputStream oos = new ObjectOutputStream(os);)
+		}
 	}
 
 	/**
