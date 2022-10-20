@@ -80,7 +80,7 @@ interface Message {
 	
 	/**
 	 * @param idTerminal terminal that has been turned on
-	 * @param idCaller	 terminal that tried to communicate before
+	 * @param idCaller terminal that tried to communicate before
 	 * @return string with informative message.
 	 */
 	static String isAvailable(int idTerminal, int idCaller) {
@@ -89,7 +89,7 @@ interface Message {
 	
 	/**
 	 * @param idTerminal terminal that has been turned on
-	 * @param idCaller	 terminal that tried to communicate before
+	 * @param idCaller terminal that tried to communicate before
 	 * @return string with informative message.
 	 */
 	static String isAvailableForTextCommunications(int idTerminal, int idCaller) {

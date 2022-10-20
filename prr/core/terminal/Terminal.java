@@ -9,8 +9,6 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.io.Serial;
 
-// FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
-
 /**
  * Abstract terminal.
  */
@@ -120,12 +118,10 @@ abstract public class Terminal implements Serializable, Visitable {
 		this._friends.put(friend.getKey(), friend);
 	}
 
-	// FIXME
 	public void startInteractiveCommunication() {
 		this._isActive = true;
 	}
 
-	// FIXME
 	public void receiveInteractiveCommunication() {
 		this._isActive = true;
 	}
@@ -134,13 +130,14 @@ abstract public class Terminal implements Serializable, Visitable {
 	/**
 	 * Checks if this terminal can end the current interactive communication.
 	 *
-	 * @return true if this terminal is busy (i.e., it has an active interactive communication) and
-	 *					it was the originator of this communication.
+	 * @return true if this terminal is busy (i.e., it has an active
+	 * 		interactive communication) and it was the originator of
+	 * 		this communication.
 	 **/
 	public boolean canEndCurrentCommunication() {
 		return this._state.canEndCurrentCommunication();
 	}
-	
+
 	/**
 	 * Checks if this terminal can start a new communication.
 	 *

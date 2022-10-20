@@ -23,17 +23,16 @@ public class NetworkManager {
 	/** The network itself. */
 	private Network _network = new Network();
 	private String _filename;
-	//FIXME	addmore fields if needed
 
 	public Network getNetwork() {
 		return _network;
 	}
 
 	/**
-	 * @param filename name of the file containing the serialized application's state
-	 *				to load.
-	 * @throws UnavailableFileException if the specified file does not exist or there is
-	 *				 an error while processing this file.
+	 * @param filename name of the file containing the serialized
+	 * 		application's state to load.
+	 * @throws UnavailableFileException if the specified file does not
+	 * 		exist or there is an error while processing this file.
 	 */
 	public void load(String filename) throws UnavailableFileException {
 		//FIXME implement serialization method
@@ -76,5 +75,5 @@ public class NetworkManager {
 		} catch (IOException | UnrecognizedEntryException /* FIXME maybe other exceptions */ e) {
 			throw new ImportFileException(filename, e);
 		}
-	}	
+	}
 }
