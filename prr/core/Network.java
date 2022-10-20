@@ -9,6 +9,7 @@ import prr.core.exception.UnrecognizedEntryException;
 import prr.core.terminal.BasicTerminal;
 import prr.core.terminal.FancyTerminal;
 import prr.core.terminal.Terminal;
+import prr.util.StringComparator;
 import prr.util.Visitable;
 import prr.util.Visitor;
 import prr.core.exception.DuplicateTerminalKeyException;
@@ -29,13 +30,10 @@ public class Network implements Serializable {
 	/** Serial number for serialization. */
 	private static final long serialVersionUID = 202210161305L;
 
-	private Map<String, Terminal> _terminals = new TreeMap<String, Terminal>();
+	private Map<String, Terminal> _terminals =
+			new TreeMap<String, Terminal>(new StringComparator());
 
 	private Map<String, Client> _clients = new TreeMap<String, Client>();
-
-	// FIXME define attributes
-	// FIXME define contructor(s)
-	// FIXME define methods
 
 	/**
 	 * Adds a new terminal to the app.
@@ -117,7 +115,6 @@ public class Network implements Serializable {
 		Terminal friend = getTerminal(friendKey);
 
 		terminal.addFriend(friend);
-		// friend.addFriend(terminal); apparently not true
 	}
 
 	public <T> void visitAll(Visitor<T> visitor, Collection<? extends Visitable> col) {
@@ -125,7 +122,6 @@ public class Network implements Serializable {
 		for (Visitable element : col) {
 			element.accept(visitor);
 		}
-
 	}
 
 	public Collection<Client> getAlClients() {
@@ -143,7 +139,6 @@ public class Network implements Serializable {
 	public int getTerminalCount() {
 		return this._terminals.size();
 	}
-
 }
 
 
