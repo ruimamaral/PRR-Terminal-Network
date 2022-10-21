@@ -1,5 +1,6 @@
 package prr.core;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -21,11 +22,14 @@ import prr.core.exception.UnknownTerminalKeyException;
 
 
 /**
- * Class Store implements a store.
+ * Class Network implements a network of terminals.
+ * Class used to store and manage a network of
+ * communication terminals and clients.
  */
 public class Network implements Serializable {
 
 	/* Serial number for serialization. */
+	@Serial
 	private static final long serialVersionUID = 202210161305L;
 
 	/* Terminal map containing all the terminals in the network */
