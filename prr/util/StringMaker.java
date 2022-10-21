@@ -53,7 +53,10 @@ public class StringMaker implements Visitor<Void> {
 	@Override
 	public String toString() {
 		// Delete trailing newline character before returning
-		String finished = text.deleteCharAt(text.length() - 1).toString();
+		if (!text.isEmpty()) {
+			text.deleteCharAt(text.length() - 1);
+		}
+		String finished = text.toString();
 
 		// Reset StringBuilder
 		this.text.setLength(0);
