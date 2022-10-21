@@ -17,7 +17,7 @@ class DoRegisterTerminal extends Command<Network> {
 		addStringField("terminalKey", Message.terminalKey());
 		addOptionField("terminalType",
 				Message.terminalType(), "BASIC", "FANCY");
-		addStringField("ownerKey", Message.clientKey());
+		addStringField("clientKey", Message.clientKey());
 	}
 
 	@Override
