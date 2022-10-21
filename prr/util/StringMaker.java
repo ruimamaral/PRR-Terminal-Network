@@ -21,7 +21,7 @@ public class StringMaker implements Visitor<Void> {
 		} else {
 			text.append("No");
 		}
-		text.append(client.getTerminalCount()).append("|")
+		text.append("|").append(client.getTerminalCount()).append("|")
 				.append(client.getTotalPaid()).append("|")
 				.append(client.getDebt()).append("\n");
 	
