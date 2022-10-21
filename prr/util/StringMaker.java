@@ -14,9 +14,14 @@ public class StringMaker implements Visitor<Void> {
 		text.append("CLIENT|").append(client.getKey()).append("|")
 				.append(client.getName()).append("|")
 				.append(client.getTaxId()).append("|")
-				.append(client.getStatusName()).append("|")
-				.append(client.hasNotificationsEnabled()).append("|")
-				.append(client.getTerminalCount()).append("|")
+				.append(client.getStatusName()).append("|");
+
+		if (client.hasNotificationsEnabled()) {
+			text.append("YES");
+		} else {
+			text.append("No");
+		}
+		text.append(client.getTerminalCount()).append("|")
 				.append(client.getTotalPaid()).append("|")
 				.append(client.getDebt()).append("\n");
 	
@@ -25,7 +30,7 @@ public class StringMaker implements Visitor<Void> {
 
 	public Void visit(Terminal terminal) {
 
-		text.append("TERMINAL|").append(terminal.getTypeName()).append("|")
+		text.append(terminal.getTypeName()).append("|")
 				.append(terminal.getKey()).append("|")
 				.append(terminal.getClientKey()).append("|")
 				.append(terminal.getStateName()).append("|")

@@ -21,7 +21,8 @@ class DoShowUnusedTerminals extends Command<Network> {
 	protected final void execute() throws CommandException {
 		if (_receiver.getClientCount() != 0) {
 			_receiver.visitAll(stringMaker,
-					_receiver.getAllTerminals(), term -> term.hasActivity());
+					_receiver.getAllTerminals(),
+					term -> term.hasActivity() == false);
 		}
 	}
 }
