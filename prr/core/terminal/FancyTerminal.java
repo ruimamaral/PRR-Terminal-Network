@@ -10,7 +10,7 @@ public class FancyTerminal extends Terminal {
 	private static final long serialVersionUID = 202210161925L;
 
 	@Override
-	public String getType() {
+	public String getTypeName() {
 		return "FANCY";
 	}
 

@@ -14,7 +14,7 @@ public class BasicTerminal extends Terminal {
 	}
 
 	@Override
-	public String getType() {
+	public String getTypeName() {
 		return "BASIC";
 	}
 

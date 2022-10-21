@@ -56,7 +56,7 @@ public class NetworkManager {
 	 * @throws IOException if there is some error while serializing the state of the network to disk.
 	 */
 	public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
-		if (this._filename == null) {
+		if (this._filename == null || this._filename.isBlank()) {
 			throw new MissingFileAssociationException();
 		} else {
 			try (FileOutputStream os = new FileOutputStream(this._filename);
