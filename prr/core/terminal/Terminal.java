@@ -154,4 +154,109 @@ abstract public class Terminal implements Serializable, Visitable {
 	public boolean canStartCommunication() {
 		return this._state.canStartCommunication();
 	}
+
+	public class BusyTerminalState extends Terminal.TerminalState {
+	
+		@Serial
+		private static final long serialVersionUID = 202210161925L;
+	
+		// FIXME add more functionality.
+	
+		@Override
+		void setBusy() {}
+	
+		@Override
+		String getStateName() {
+			return "BUSY";
+		}
+	
+		@Override
+		boolean canStartCommunication() {
+			return false;
+		}
+	
+		@Override
+		boolean canEndCurrentCommunication() {
+			// FIXME check if terminal is originator.
+			return true;
+		}
+	}
+
+	public class IdleTerminalState extends Terminal.TerminalState {
+	
+		@Serial
+		private static final long serialVersionUID = 202210161925L;
+	
+		// FIXME add more functionality.
+	
+		@Override
+		void setIdle() {}
+	
+		@Override
+		String getStateName() {
+			return "IDLE";
+		}
+	
+		@Override
+		boolean canStartCommunication() {
+			return true;
+		}
+	
+		@Override
+		boolean canEndCurrentCommunication() {
+			return false;
+		}
+	}
+	
+	public class OffTerminalState extends Terminal.TerminalState {
+		
+		@Serial
+		private static final long serialVersionUID = 202210161925L;
+	
+		// FIXME add more functionality.
+	
+		@Override
+		void turnOff() {}
+	
+		@Override
+		String getStateName() {
+			return "OFF";
+		}
+	
+		@Override
+		boolean canStartCommunication() {
+			return false;
+		}
+	
+		@Override
+		boolean canEndCurrentCommunication() {
+			return false;
+		}
+	}
+
+	public class SilenceTerminalState extends Terminal.TerminalState {
+	
+		@Serial
+		private static final long serialVersionUID = 202210161925L;
+	
+		// FIXME add more functionality.
+	
+		@Override
+		void setSilence() {}
+	
+		@Override
+		String getStateName() {
+			return "SILENCE";
+		}
+	
+		@Override
+		boolean canStartCommunication() {
+			return false;
+		}
+	
+		@Override
+		boolean canEndCurrentCommunication() {
+			return false;
+		}
+	}
 }
