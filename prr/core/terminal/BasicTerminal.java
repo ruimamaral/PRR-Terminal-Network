@@ -14,6 +14,11 @@ public class BasicTerminal extends Terminal {
 	}
 
 	@Override
+	public boolean hasOngoingCom() {
+		return false;
+	}
+
+	@Override
 	public String getTypeName() {
 		return "BASIC";
 	}

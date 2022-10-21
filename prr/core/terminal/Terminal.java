@@ -73,6 +73,8 @@ abstract public class Terminal implements Serializable, Visitable {
 
 	public abstract String getTypeName();
 
+	public abstract boolean hasOngoingCom();
+
 	public String getKey() {
 		return this._key;
 	}
@@ -133,7 +135,6 @@ abstract public class Terminal implements Serializable, Visitable {
 		this._isActive = true;
 		// FIXME
 	}
-
 
 	/**
 	 * Checks if this terminal can end the current interactive communication.

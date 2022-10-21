@@ -11,7 +11,7 @@ import pt.tecnico.uilib.menus.CommandException;
 class DoShowOngoingCommunication extends TerminalCommand {
 
 	DoShowOngoingCommunication(Network context, Terminal terminal) {
-		super(Label.SHOW_ONGOING_COMMUNICATION, context, terminal);
+		super(Label.SHOW_ONGOING_COMMUNICATION, context, terminal, receiver -> receiver.hasOngoingCom());
 	}
 	
 	@Override
