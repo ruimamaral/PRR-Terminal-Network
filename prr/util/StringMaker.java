@@ -52,7 +52,6 @@ public class StringMaker implements Visitor<Void> {
 		return null;
 	}
 
-
 	@Override
 	public String toString() {
 		// Delete trailing newline character before returning

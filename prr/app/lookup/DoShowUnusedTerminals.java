@@ -24,6 +24,10 @@ class DoShowUnusedTerminals extends Command<Network> {
 					_receiver.getAllTerminals(),
 					term -> (!term.hasActivity()));
 		}
-		_display.popup(stringMaker);
+		String text = stringMaker.toString();
+
+		if (text.length() != 0) {
+			_display.popup(stringMaker);
+		}
 	}
 }
