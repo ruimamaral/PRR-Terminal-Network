@@ -7,17 +7,11 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 
-import prr.core.exception.DuplicateClientKeyException;
-import prr.core.exception.DuplicateTerminalKeyException;
 import prr.core.exception.ImportFileException;
 import prr.core.exception.MissingFileAssociationException;
 import prr.core.exception.UnavailableFileException;
 import prr.core.exception.UnrecognizedEntryException;
-import prr.util.Visitor;
-import prr.core.exception.UnknownClientKeyException;
-import prr.core.exception.UnknownTerminalKeyException;
 
-//FIXME add more import if needed (cannot import from pt.tecnico or prr.app)
 
 /**
  * Manage access to network and implement load/save operations.
@@ -56,7 +50,7 @@ public class NetworkManager {
 	 * @throws IOException if there is some error while serializing the state of the network to disk.
 	 */
 	public void save() throws FileNotFoundException, MissingFileAssociationException, IOException {
-		if (this._filename == null || this._filename.isBlank()) {
+		if (this._filename == null) {
 			throw new MissingFileAssociationException();
 		} else {
 			try (FileOutputStream os = new FileOutputStream(this._filename);

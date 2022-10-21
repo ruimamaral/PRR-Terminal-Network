@@ -40,9 +40,12 @@ public class StringMaker implements Visitor<Void> {
 		Collection<String> friends = terminal.getFriendKeys();
 
 		if (friends.size() != 0) {
+			text.append("|");
 			for (String friendKey : friends) {
-				text.append("|").append(friendKey);
+				text.append(friendKey).append(",");
 			}
+			// Delete trailing comma
+			text.deleteCharAt(text.length() - 1);
 		}
 		text.append("\n");
 

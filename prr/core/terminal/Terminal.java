@@ -6,6 +6,7 @@ import prr.util.Visitor;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.TreeMap;
 import java.io.Serial;
@@ -94,7 +95,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		return this._state.getStateName();
 	}
 	public Collection<String> getFriendKeys() {
-		return this._friends.keySet();
+		return Collections.unmodifiableSet(this._friends.keySet());
 	}
 
 	public void turnOff() {
@@ -123,6 +124,11 @@ abstract public class Terminal implements Serializable, Visitable {
 	}
 
 	public void addFriend(Terminal friend) {
+		String friendKey = friend.getKey();
+
+		if (this._friends.containsKey(friendKey)) {
+			throw new IllegalArgumentException();
+		}
 		this._friends.put(friend.getKey(), friend);
 	}
 

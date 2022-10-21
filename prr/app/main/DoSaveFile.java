@@ -2,6 +2,7 @@ package prr.app.main;
 
 import java.io.IOException;
 
+import prr.app.exception.FileOpenFailedException;
 import prr.core.NetworkManager;
 import prr.core.exception.MissingFileAssociationException;
 import pt.tecnico.uilib.forms.Form;
@@ -17,22 +18,15 @@ class DoSaveFile extends Command<NetworkManager> {
 	}
 	
 	@Override
-	protected final void execute() {
+	protected final void execute() throws FileOpenFailedException {
 		try {
 			try {
 				_receiver.save();
 			} catch (MissingFileAssociationException e) {
-				this.saveAs();
+				_receiver.saveAs(Form.requestString(Message.newSaveAs()));
 			}
-		} catch (IOException e) {
-			e.printStackTrace(); // unexpected behaviour
-		}
-	}
-	private void saveAs() throws IOException {
-		try {
-			_receiver.saveAs(Form.requestString(Message.newSaveAs()));
-		} catch (MissingFileAssociationException e) {
-			this.saveAs();
+		} catch (IOException | MissingFileAssociationException e) {
+			throw new FileOpenFailedException(e);
 		}
 	}
 }
