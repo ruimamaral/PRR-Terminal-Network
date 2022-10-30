@@ -60,7 +60,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		abstract boolean canEndCurrentCommunication();
 	}
 
-	public Terminal(String key, Client client) {
+	protected Terminal(String key, Client client) {
 		this._client = client;
 		this._key = key;
 		this._state = new IdleTerminalState();
