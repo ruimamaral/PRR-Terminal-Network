@@ -11,7 +11,6 @@ import java.util.function.Predicate;
 import prr.core.terminal.BasicTerminal;
 import prr.core.terminal.FancyTerminal;
 import prr.core.terminal.Terminal;
-import prr.util.StringComparator;
 import prr.util.Visitable;
 import prr.util.Visitor;
 import prr.core.exception.DuplicateTerminalKeyException;
@@ -33,10 +32,9 @@ public class Network implements Serializable {
 	private static final long serialVersionUID = 202210161305L;
 
 	/* Terminal map containing all the terminals in the network */
-	private Map<String, Terminal> _terminals =
-			new TreeMap<String, Terminal>(new StringComparator());
+	private Map<String, Terminal> _terminals = new TreeMap<String, Terminal>();
 
-	/* Cerminal map containing all the clients in the network */
+	/* Client map containing all the clients in the network */
 	private Map<String, Client> _clients = new TreeMap<String, Client>();
 
 	/**
@@ -62,7 +60,7 @@ public class Network implements Serializable {
 			default -> throw new IllegalArgumentException();
 		}
 		this.addTerminal(newTerm);
-		owner.addTerminal(newTerm, key);
+		owner.addTerminal(newTerm);
 		return newTerm;
 	}
 
@@ -74,7 +72,7 @@ public class Network implements Serializable {
 	 * @throws UnknownClientKeyException
 	 */
 	public Client getClient(String key) throws UnknownClientKeyException {
-		Client client = this._clients.get(key);
+		Client client = this._clients.get(key.toUpperCase());
 
 		if (client == null) {
 			throw new UnknownClientKeyException(key);
@@ -158,7 +156,7 @@ public class Network implements Serializable {
 	 * @throws DuplicateTerminalKeyException
 	 */
 	private void addClient(Client client) throws DuplicateClientKeyException {
-		String key = client.getKey();
+		String key = client.getKey().toUpperCase();
 
 		if (this._clients.containsKey(key)) {
 			throw new DuplicateClientKeyException();

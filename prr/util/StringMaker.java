@@ -7,21 +7,21 @@ import prr.core.terminal.Terminal;
 
 public class StringMaker implements Visitor<Void> {
 
-	StringBuilder text = new StringBuilder(500);
+	private StringBuilder _text = new StringBuilder(500);
 
 	public Void visit(Client client) {
 
-		text.append("CLIENT|").append(client.getKey()).append("|")
+		this._text.append("CLIENT|").append(client.getKey()).append("|")
 				.append(client.getName()).append("|")
 				.append(client.getTaxId()).append("|")
 				.append(client.getStatusName()).append("|");
 
 		if (client.hasNotificationsEnabled()) {
-			text.append("YES");
+			this._text.append("YES");
 		} else {
-			text.append("No");
+			this._text.append("No");
 		}
-		text.append("|").append(client.getTerminalCount()).append("|")
+		this._text.append("|").append(client.getTerminalCount()).append("|")
 				.append(client.getTotalPaid()).append("|")
 				.append(client.getDebt()).append("\n");
 	
@@ -30,7 +30,7 @@ public class StringMaker implements Visitor<Void> {
 
 	public Void visit(Terminal terminal) {
 
-		text.append(terminal.getTypeName()).append("|")
+		this._text.append(terminal.getTypeName()).append("|")
 				.append(terminal.getKey()).append("|")
 				.append(terminal.getClientKey()).append("|")
 				.append(terminal.getStateName()).append("|")
@@ -40,14 +40,14 @@ public class StringMaker implements Visitor<Void> {
 		Collection<String> friends = terminal.getFriendKeys();
 
 		if (friends.size() != 0) {
-			text.append("|");
+			this._text.append("|");
 			for (String friendKey : friends) {
-				text.append(friendKey).append(",");
+				this._text.append(friendKey).append(",");
 			}
 			// Delete trailing comma
-			text.deleteCharAt(text.length() - 1);
+			this._text.deleteCharAt(this._text.length() - 1);
 		}
-		text.append("\n");
+		this._text.append("\n");
 
 		return null;
 	}
@@ -55,13 +55,13 @@ public class StringMaker implements Visitor<Void> {
 	@Override
 	public String toString() {
 		// Delete trailing newline character before returning
-		if (!text.isEmpty()) {
-			text.deleteCharAt(text.length() - 1);
+		if (!this._text.isEmpty()) {
+			this._text.deleteCharAt(this._text.length() - 1);
 		}
-		String finished = text.toString();
+		String finished = this._text.toString();
 
 		// Reset StringBuilder
-		this.text.setLength(0);
+		this._text.setLength(0);
 		return finished;
 	}
 	

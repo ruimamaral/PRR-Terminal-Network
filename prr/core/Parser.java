@@ -83,8 +83,8 @@ public class Parser {
 		} catch (IllegalArgumentException
 				| UnknownClientKeyException 
 				| DuplicateTerminalKeyException e) {
-		throw new UnrecognizedEntryException("Invalid specification: " + line, e);
-	}
+			throw new UnrecognizedEntryException("Invalid specification: " + line, e);
+		}
 }
 
 	//Parse a line with format FRIENDS|idTerminal|idTerminal1,...,idTerminalN

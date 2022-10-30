@@ -129,7 +129,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		if (this._friends.containsKey(friendKey)) {
 			throw new IllegalArgumentException();
 		}
-		this._friends.put(friend.getKey(), friend);
+		this._friends.put(friendKey, friend);
 	}
 
 	public void startInteractiveCommunication() {

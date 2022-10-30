@@ -17,15 +17,15 @@ class DoShowClient extends Command<Network> {
 		addStringField("clientKey", Message.key());
 	}
 
-	final Visitor<Void> stringMaker = new StringMaker();
+	private final Visitor<Void> _stringMaker = new StringMaker();
 	
 	@Override
 	protected final void execute() throws CommandException {
 		String key = stringField("clientKey");
 
 		try {
-			_receiver.getClient(key).accept(stringMaker);
-			_display.popup(stringMaker);
+			_receiver.getClient(key).accept(this._stringMaker);
+			_display.popup(this._stringMaker);
 		} catch (prr.core.exception.UnknownClientKeyException e) {
 			throw new UnknownClientKeyException(key);
 		}

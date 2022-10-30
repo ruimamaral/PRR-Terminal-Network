@@ -16,14 +16,14 @@ class DoShowAllClients extends Command<Network> {
 		super(Label.SHOW_ALL_CLIENTS, receiver);
 	}
 	
-	final Visitor<Void> stringMaker = new StringMaker();
+	private final Visitor<Void> _stringMaker = new StringMaker();
 
 	@Override
 	protected final void execute() throws CommandException {
 		if (_receiver.getClientCount() != 0) {
-			_receiver.visitAll(stringMaker,
+			_receiver.visitAll(this._stringMaker,
 					_receiver.getAllClients(), client -> true);
-			_display.popup(stringMaker);
+			_display.popup(this._stringMaker);
 		}
 	}
 }

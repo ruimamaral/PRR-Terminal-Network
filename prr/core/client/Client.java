@@ -81,8 +81,8 @@ public class Client implements Serializable, Visitable {
 		return (int) Math.round(this._debt);
 	}
 
-	public void addTerminal(Terminal terminal, String terminalKey) {
-		this._terminals.put(terminalKey, terminal);
+	public void addTerminal(Terminal terminal) {
+		this._terminals.put(terminal.getKey(), terminal);
 	}
 
 	public class NormalClientStatus extends Client.ClientStatus {
