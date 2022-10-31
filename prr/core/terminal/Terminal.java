@@ -196,11 +196,11 @@ abstract public class Terminal implements Serializable, Visitable {
 			setState(new SilenceTerminalState());
 		}
 
-		abstract String getStateName();
+		protected abstract String getStateName();
 
-		abstract boolean canStartCommunication();
+		protected abstract boolean canStartCommunication();
 
-		abstract boolean canEndCurrentCommunication();
+		protected abstract boolean canEndCurrentCommunication();
 
 		public void startInteractiveCommunication(Communication communication) {
 			Terminal.this.addCommunication(communication);
@@ -208,6 +208,9 @@ abstract public class Terminal implements Serializable, Visitable {
 		}
 
 		public void sendTextCommunication(TextCommunication communication) {
+			Terminal.this.addCommunication(communication);
+			Terminal.this._debt +=
+					communication.setCost(Terminal.this.getPriceTable());
 		}
 
 		public void receiveTextCommunication(TextCommunication communication) {
@@ -228,17 +231,17 @@ abstract public class Terminal implements Serializable, Visitable {
 		void setBusy() {}
 	
 		@Override
-		String getStateName() {
+		protected String getStateName() {
 			return "BUSY";
 		}
 	
 		@Override
-		boolean canStartCommunication() {
+		protected boolean canStartCommunication() {
 			return false;
 		}
 	
 		@Override
-		boolean canEndCurrentCommunication() {
+		protected boolean canEndCurrentCommunication() {
 			// FIXME check if terminal is originator.
 			return true;
 		}
@@ -255,17 +258,17 @@ abstract public class Terminal implements Serializable, Visitable {
 		void setIdle() {}
 	
 		@Override
-		String getStateName() {
+		protected String getStateName() {
 			return "IDLE";
 		}
 	
 		@Override
-		boolean canStartCommunication() {
+		protected boolean canStartCommunication() {
 			return true;
 		}
 	
 		@Override
-		boolean canEndCurrentCommunication() {
+		protected boolean canEndCurrentCommunication() {
 			return false;
 		}
 	}
@@ -281,17 +284,17 @@ abstract public class Terminal implements Serializable, Visitable {
 		void turnOff() {}
 	
 		@Override
-		String getStateName() {
+		protected String getStateName() {
 			return "OFF";
 		}
 	
 		@Override
-		boolean canStartCommunication() {
+		protected boolean canStartCommunication() {
 			return false;
 		}
 	
 		@Override
-		boolean canEndCurrentCommunication() {
+		protected boolean canEndCurrentCommunication() {
 			return false;
 		}
 	}
