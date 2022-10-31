@@ -9,7 +9,8 @@ public class BasicTerminal extends Terminal {
 	@Serial
 	private static final long serialVersionUID = 202210161925L;
 
-	public BasicTerminal(String key, Client client) {
+	public BasicTerminal(String key,
+			Client client) throws IllegalArgumentException {
 		super(key, client);
 	}
 

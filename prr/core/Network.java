@@ -16,6 +16,8 @@ import prr.util.Visitor;
 import prr.core.exception.DuplicateTerminalKeyException;
 import prr.core.exception.DuplicateClientKeyException;
 import prr.core.client.Client;
+import prr.core.communication.Communication;
+import prr.core.communication.VideoCommunication;
 import prr.core.exception.UnknownClientKeyException;
 import prr.core.exception.UnknownTerminalKeyException;
 
@@ -37,6 +39,10 @@ public class Network implements Serializable {
 	/* Client map containing all the clients in the network */
 	private Map<String, Client> _clients = new TreeMap<String, Client>();
 
+	/* Communication map containing all the communications in the network */
+	private Map<Integer, Communication> _communications =
+			new TreeMap<Integer, Communication>();
+
 	/**
 	 * Adds a new terminal to the app.
 	 * 
@@ -51,7 +57,6 @@ public class Network implements Serializable {
 			throws IllegalArgumentException, UnknownClientKeyException,
 			DuplicateTerminalKeyException {
 		Terminal newTerm;
-		Terminal.checkKey(key);
 		Client owner = this.getClient(client);
 
 		switch(type) {
@@ -62,6 +67,43 @@ public class Network implements Serializable {
 		this.addTerminal(newTerm);
 		owner.addTerminal(newTerm);
 		return newTerm;
+	}
+
+	/**
+	 * Registers a new client on the network.
+	 * 
+	 * @param key client's key
+	 * @param name client's name
+	 * @param taxId client's tax ID
+	 * @return Client
+	 * @throws DuplicateClientKeyException
+	 */
+	public Client registerClient(String key,
+			String name, int taxId) throws DuplicateClientKeyException {
+		Client newClient = new Client(key, name, taxId);
+
+		this.addClient(newClient);
+		return newClient;
+	}
+
+	public void registerVideoCommunication(Terminal sender,
+			String receiverKey) throws UnknownTerminalKeyException{
+		Terminal receiver = this.getTerminal(receiverKey);
+
+		Communication newComm = new VideoCommunication(
+				this._communications.size(), sender, receiver);
+		this.registerInteractiveCommunication(sender, receiver, newComm);
+		}
+
+	}
+
+	private void registerInteractiveCommunication(
+			Terminal sender, Terminal receiver, Communication communication) {
+		if (receiver.canStartInteractiveCommunication()) {
+			sender.receiveInteractiveCommunication(communication);
+			receiver.startInteractiveCommunication(communication);
+
+
 	}
 
 	/**
@@ -165,21 +207,8 @@ public class Network implements Serializable {
 		}
 	}
 
-	/**
-	 * Registers a new client on the network.
-	 * 
-	 * @param key client's key
-	 * @param name client's name
-	 * @param taxId client's tax ID
-	 * @return Client
-	 * @throws DuplicateClientKeyException
-	 */
-	public Client registerClient(String key, String name, int taxId) 
-			throws DuplicateClientKeyException {
-		Client newClient = new Client(key, name, taxId);
-
-		this.addClient(newClient);
-		return newClient;
+	private void addCommunication(Communication comm) {
+		this._communications.put(comm.getKey(), comm);
 	}
 
 	/**

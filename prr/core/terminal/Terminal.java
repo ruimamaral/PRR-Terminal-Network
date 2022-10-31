@@ -60,7 +60,9 @@ abstract public class Terminal implements Serializable, Visitable {
 		abstract boolean canEndCurrentCommunication();
 	}
 
-	protected Terminal(String key, Client client) {
+	protected Terminal(String key,
+			Client client) throws IllegalArgumentException {
+		this.checkKey(key);
 		this._client = client;
 		this._key = key;
 		this._state = new IdleTerminalState();
@@ -111,7 +113,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		this._state.setSilence();
 	}
 
-	public static String checkKey(String key) {
+	private String checkKey(String key) throws IllegalArgumentException {
 		if (key.length() != 6) {
 			throw new IllegalArgumentException();
 		}
