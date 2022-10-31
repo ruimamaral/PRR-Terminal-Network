@@ -14,10 +14,15 @@ import prr.core.terminal.Terminal;
 import prr.util.Visitable;
 import prr.util.Visitor;
 import prr.core.exception.DuplicateTerminalKeyException;
+import prr.core.exception.TargetBusyException;
+import prr.core.exception.TargetOffException;
+import prr.core.exception.TargetSilentException;
 import prr.core.exception.DuplicateClientKeyException;
 import prr.core.client.Client;
 import prr.core.communication.Communication;
+import prr.core.communication.TextCommunication;
 import prr.core.communication.VideoCommunication;
+import prr.core.communication.VoiceCommunication;
 import prr.core.exception.UnknownClientKeyException;
 import prr.core.exception.UnknownTerminalKeyException;
 
@@ -80,30 +85,53 @@ public class Network implements Serializable {
 	 */
 	public Client registerClient(String key,
 			String name, int taxId) throws DuplicateClientKeyException {
+
 		Client newClient = new Client(key, name, taxId);
 
 		this.addClient(newClient);
 		return newClient;
 	}
 
-	public void registerVideoCommunication(Terminal sender,
-			String receiverKey) throws UnknownTerminalKeyException{
+	public void registerInteractiveCommunication(
+			String type, Terminal sender, String receiverKey)
+			throws  TargetBusyException, TargetOffException,
+			TargetSilentException, UnknownTerminalKeyException {
+
 		Terminal receiver = this.getTerminal(receiverKey);
+		int size = this._communications.size();
+		Communication newComm;
 
-		Communication newComm = new VideoCommunication(
-				this._communications.size(), sender, receiver);
-		this.registerInteractiveCommunication(sender, receiver, newComm);
+		switch (type) {
+			case "VIDEO" -> newComm =
+					new VideoCommunication(size, sender, receiver);
+			case "VOICE" -> newComm =
+					new VoiceCommunication(size, sender, receiver);
+			default -> throw new IllegalArgumentException();
 		}
-
+		this.startInteractiveCommunication(sender, receiver, newComm);
 	}
 
-	private void registerInteractiveCommunication(
-			Terminal sender, Terminal receiver, Communication communication) {
-		if (receiver.canStartInteractiveCommunication()) {
-			sender.receiveInteractiveCommunication(communication);
-			receiver.startInteractiveCommunication(communication);
+	private void startInteractiveCommunication(
+			Terminal sender, Terminal receiver, Communication communication)
+			throws TargetBusyException,
+			TargetOffException, TargetSilentException {
 
+		receiver.receiveInteractiveCommunication(communication);
+		sender.startInteractiveCommunication(communication);
+		this.addCommunication(communication);
+	}
 
+	public void registerTextCommunication(
+			Terminal sender, String receiverKey, String message) 
+			throws TargetOffException {
+		
+		Terminal receiver = this.getTerminal(receiverKey); // meter throws !!!
+		TextCommunication newComm = new TextCommunication(
+				this._communications.size(), sender, receiver, message);
+
+		receiver.receiveTextCommunication(newComm);
+		sender.sendTextCommunication(newComm);
+		this.addCommunication(newComm);
 	}
 
 	/**

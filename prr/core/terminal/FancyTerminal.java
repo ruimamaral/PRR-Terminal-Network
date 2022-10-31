@@ -3,6 +3,7 @@ package prr.core.terminal;
 import java.io.Serial;
 
 import prr.core.client.Client;
+import prr.core.communication.Communication;
 
 public class FancyTerminal extends Terminal {
 
@@ -24,6 +25,15 @@ public class FancyTerminal extends Terminal {
 	@Override
 	public String getTypeName() {
 		return "FANCY";
+	}
+
+	public void startInteractiveCommunication(Communication communication) {
+		// FIXME
+	}
+
+	public void receiveInteractiveCommunication(Communication communication) {
+		this.addCommunication(communication);
+		// FIXME
 	}
 
 	//FIXME add more functionality.

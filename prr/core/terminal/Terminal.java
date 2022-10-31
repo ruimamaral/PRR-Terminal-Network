@@ -1,6 +1,12 @@
 package prr.core.terminal;
 
 import prr.core.client.Client;
+import prr.core.communication.Communication;
+import prr.core.communication.TextCommunication;
+import prr.core.exception.TargetBusyException;
+import prr.core.exception.TargetOffException;
+import prr.core.exception.TargetSilentException;
+import prr.core.pricetable.PriceTable;
 import prr.util.Visitable;
 import prr.util.Visitor;
 
@@ -27,38 +33,16 @@ abstract public class Terminal implements Serializable, Visitable {
 
 	private Map<String, Terminal> _friends = new TreeMap<String, Terminal>();
 
+	private Map<Integer, Communication> _communications =
+			new TreeMap<Integer, Communication>();
+	
+	private Communication _ongoingCom;
+
 	private boolean _isActive;
 
 	private double _totalPaid;
 
 	private double _debt;
-
-	// Class that manages terminal state dependent functionalities.
-	public abstract class TerminalState implements Serializable {
-
-		void setState(TerminalState state) {
-			Terminal.this._state = state;
-		}
-
-		void turnOff() {
-			setState(new OffTerminalState());
-		}
-		void setIdle() {
-			setState(new IdleTerminalState());
-		}
-		void setBusy() {
-			setState(new BusyTerminalState());
-		}
-		void setSilence() {
-			setState(new SilenceTerminalState());
-		}
-
-		abstract String getStateName();
-
-		abstract boolean canStartCommunication();
-
-		abstract boolean canEndCurrentCommunication();
-	}
 
 	protected Terminal(String key,
 			Client client) throws IllegalArgumentException {
@@ -99,6 +83,9 @@ abstract public class Terminal implements Serializable, Visitable {
 	public Collection<String> getFriendKeys() {
 		return Collections.unmodifiableSet(this._friends.keySet());
 	}
+	public PriceTable getPriceTable() {
+		return this._client.getPriceTable();
+	}
 
 	public void turnOff() {
 		this._state.turnOff();
@@ -128,21 +115,21 @@ abstract public class Terminal implements Serializable, Visitable {
 	public void addFriend(Terminal friend) {
 		String friendKey = friend.getKey();
 
-		if (this._friends.containsKey(friendKey)) {
+		if (this.isFriend(friendKey)) {
 			throw new IllegalArgumentException();
 		}
 		this._friends.put(friendKey, friend);
 	}
 
-	public void startInteractiveCommunication() {
-		this._isActive = true;
-		// FIXME
+	public boolean isFriend(String key) {
+		return this._friends.containsKey(key);
 	}
 
-	public void receiveInteractiveCommunication() {
-		this._isActive = true;
-		// FIXME
+	public void addCommunication(Communication communication) {
+		this._communications.put(communication.getKey(), communication);
 	}
+
+	public 
 
 	/**
 	 * Checks if this terminal can end the current interactive communication.
@@ -162,6 +149,72 @@ abstract public class Terminal implements Serializable, Visitable {
 	 **/
 	public boolean canStartCommunication() {
 		return this._state.canStartCommunication();
+	}
+
+	public void startInteractiveCommunication(Communication communication)
+			throws IllegalStateException {
+		
+		this._state.startInteractiveCommunication(communication);
+	}
+
+	public void receiveInteractiveCommunication(
+			Communication communication) throws TargetOffException,
+			TargetBusyException, TargetSilentException {
+			
+		this._state.receiveInteractiveCommunication(communication);
+	}
+
+	public void receiveTextCommunication(
+			TextCommunication communication) throws TargetOffException {
+
+		this._state.receiveTextCommunication(communication);
+	}
+
+	public void sendTextCommunication(
+			TextCommunication communication) throws IllegalStateException {
+		
+		this._state.sendTextCommunication(communication);
+	}
+
+	// Class that manages terminal state dependent functionalities.
+	public abstract class TerminalState implements Serializable {
+
+		void setState(TerminalState state) {
+			Terminal.this._state = state;
+		}
+
+		void turnOff() {
+			setState(new OffTerminalState());
+		}
+		void setIdle() {
+			setState(new IdleTerminalState());
+		}
+		void setBusy() {
+			setState(new BusyTerminalState());
+		}
+		void setSilence() {
+			setState(new SilenceTerminalState());
+		}
+
+		abstract String getStateName();
+
+		abstract boolean canStartCommunication();
+
+		abstract boolean canEndCurrentCommunication();
+
+		public void startInteractiveCommunication(Communication communication) {
+			Terminal.this.addCommunication(communication);
+			Terminal.this._ongoingCom = communication;
+		}
+
+		public void sendTextCommunication(TextCommunication communication) {
+		}
+
+		public void receiveTextCommunication(TextCommunication communication) {
+		}
+
+		public void receiveInteractiveCommunication(Communication communication) {
+		}
 	}
 
 	public class BusyTerminalState extends Terminal.TerminalState {
