@@ -24,10 +24,7 @@ public class BasicTerminal extends Terminal {
 		return "BASIC";
 	}
 
-	@Override
-	public void setBusy() {
-		// FIXME throw exception
-	}
+	//TODO add exception overrides to fancyterminal only functionalities
 
 	@Override
 	public void setSilence() {
