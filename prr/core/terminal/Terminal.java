@@ -2,6 +2,10 @@ package prr.core.terminal;
 
 import prr.core.client.Client;
 import prr.core.communication.Communication;
+import prr.core.communication.VideoCommunication;
+import prr.core.communication.VoiceCommunication;
+import prr.core.exception.ActionNotSupportedAtDestination;
+import prr.core.exception.ActionNotSupportedAtOrigin;
 import prr.core.exception.TargetBusyException;
 import prr.core.exception.TargetOffException;
 import prr.core.exception.TargetSilentException;
@@ -101,10 +105,6 @@ abstract public class Terminal implements Serializable, Visitable {
 		return this._client.getPriceTable();
 	}
 
-	protected void setOngoingComm(Communication comm) {
-		this._ongoingCom = comm;
-	}
-
 	public void addDebt(double amount) {
 		this._debt += amount;
 		this._client.addDebt(amount);
@@ -116,11 +116,8 @@ abstract public class Terminal implements Serializable, Visitable {
 	public void setIdle() throws IllegalAccessException {
 		this._state.setIdle();
 	}
-	public void setSilence() throws IllegalAccessException {
-		this._state.setSilence();
-	}
-	protected void setBusy(boolean isSender) throws IllegalAccessException {
-		throw new IllegalAccessException();
+	public void setSilent() throws IllegalAccessException {
+		this._state.setSilent();
 	}
 
 	private String checkKey(String key) throws IllegalArgumentException {
@@ -167,8 +164,7 @@ abstract public class Terminal implements Serializable, Visitable {
 	 * 		interactive communication) and it was the originator of
 	 * 		this communication.
 	 **/
-	public boolean canEndCurrentCommunication()
-			throws IllegalAccessException {
+	public boolean canEndCurrentCommunication() {
 
 		return this._state.canEndCurrentCommunication();
 	}
@@ -182,21 +178,47 @@ abstract public class Terminal implements Serializable, Visitable {
 		return this._state.canStartCommunication();
 	}
 
-	public void startInteractiveCommunication(
-			Communication comm)	throws IllegalAccessException {
+	public abstract void startVideoCommunication(
+			VideoCommunication comm) throws IllegalAccessException,
+			TargetOffException, TargetBusyException, TargetSilentException,
+			ActionNotSupportedAtDestination, ActionNotSupportedAtOrigin;
 
-		if(this.canStartCommunication()) {
-			this._ongoingCom = comm;
-			this.addCommunication(comm);
-			this._state.setBusy(true);
+	protected abstract void receiveVideoCommunication(
+			VideoCommunication comm) throws IllegalAccessException,
+			TargetOffException, TargetBusyException, TargetSilentException,
+			ActionNotSupportedAtDestination, ActionNotSupportedAtOrigin;
+
+	public void startVoiceCommunication(
+			VoiceCommunication comm) throws IllegalAccessException,
+			TargetOffException, TargetBusyException, TargetSilentException {
+
+		// check not needed but in place in case method is misused	
+		if (this.canStartCommunication()) {
+			comm.getReceiver().receiveVoiceCommunication(comm);
+			this.startInteractiveCommunication(comm);
 		} else {
 			throw new IllegalAccessException();
 		}
 	}
+		
+	public void receiveVoiceCommunication(
+			VoiceCommunication comm) throws IllegalAccessException,
+			TargetOffException, TargetBusyException, TargetSilentException {
 
-	public void receiveInteractiveCommunication(Communication comm)
-			throws TargetOffException, TargetBusyException,
-			TargetSilentException, IllegalAccessException {
+		this.receiveInteractiveCommunication(comm);
+	}
+
+	protected void startInteractiveCommunication(
+			Communication comm)	throws IllegalAccessException {
+
+			this._ongoingCom = comm;
+			this.addCommunication(comm);
+			this._state.setBusy(true);
+	}
+
+	protected void receiveInteractiveCommunication(
+			Communication comm) throws IllegalAccessException,
+			TargetBusyException, TargetSilentException, TargetOffException {
 			
 		this._state.receiveInteractiveCommunication(comm);
 	}
@@ -248,7 +270,7 @@ abstract public class Terminal implements Serializable, Visitable {
 				setState(new BusyTerminalState(Terminal.this._state));
 			}
 		}
-		protected void setSilence() throws IllegalAccessException {
+		protected void setSilent() throws IllegalAccessException {
 			setState(new SilenceTerminalState());
 		}
 
@@ -302,7 +324,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		}
 
 		@Override
-		protected void setSilence() throws IllegalAccessException {
+		protected void setSilent() throws IllegalAccessException {
 			throw new IllegalAccessException();
 		}
 
@@ -335,6 +357,9 @@ abstract public class Terminal implements Serializable, Visitable {
 	}
 
 	public class SenderBusyTerminalState extends Terminal.BusyTerminalState {
+
+		@Serial
+		private static final long serialVersionUID = 202210161925L;
 
 		protected SenderBusyTerminalState(TerminalState oldState) {
 			super(oldState);
@@ -417,7 +442,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		private static final long serialVersionUID = 202210161925L;
 	
 		@Override
-		protected void setSilence() throws IllegalAccessException {
+		protected void setSilent() throws IllegalAccessException {
 			throw new IllegalAccessException();
 		}
 	

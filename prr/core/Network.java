@@ -99,26 +99,38 @@ public class Network implements Serializable {
 
 		Terminal receiver = this.getTerminal(receiverKey);
 		int key = this._communications.size() + 1;
-		Communication newComm;
 
 		switch (type) {
-			case "VIDEO" -> newComm =
-					new VideoCommunication(key, sender, receiver);
-			case "VOICE" -> newComm =
-					new VoiceCommunication(key, sender, receiver);
+			case "VIDEO" -> this.startVideoCommunication(sender, receiver, 
+					new VideoCommunication(key, sender, receiver));
+			case "VOICE" -> this.startVoiceCommunication(sender, receiver,
+					new VoiceCommunication(key, sender, receiver));
 			default -> throw new IllegalArgumentException();
 		}
-		this.startInteractiveCommunication(sender, receiver, newComm);
 	}
 
-	private void startInteractiveCommunication(
-			Terminal sender, Terminal receiver, Communication communication)
-			throws TargetBusyException,
-			TargetOffException, TargetSilentException {
+	private void startVideoCommunication(
+			Terminal sender, Terminal receiver,
+			VideoCommunication communication) throws
+			TargetBusyException, TargetOffException, TargetSilentException {
 
 		try {
-			receiver.receiveInteractiveCommunication(communication);
-			sender.startInteractiveCommunication(communication);
+			receiver.receiveVideoCommunication(communication);
+			sender.startVideoCommunication(communication);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();	// Unexpected behaviour
+		}
+		this.addCommunication(communication);
+	}
+
+	private void startVoiceCommunication(
+			Terminal sender, Terminal receiver,
+			VoiceCommunication communication) throws
+			TargetBusyException, TargetOffException, TargetSilentException {
+
+		try {
+			receiver.receiveVoiceCommunication(communication);
+			sender.startVoiceCommunication(communication);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();	// Unexpected behaviour
 		}
@@ -133,7 +145,7 @@ public class Network implements Serializable {
 		Communication newComm = new TextCommunication(
 				this._communications.size(), sender, receiver, message);
 
-		receiver.receiveTextCommunication();
+		receiver.receiveTextCommunication(newComm);
 		try {
 			sender.sendTextCommunication(newComm);
 		} catch (IllegalAccessException e) {

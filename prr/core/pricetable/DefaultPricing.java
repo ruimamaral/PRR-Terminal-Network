@@ -1,8 +1,9 @@
 package prr.core.pricetable;
 
 import java.io.Serial;
+import java.io.Serializable;
 
-public class DefaultPricing {
+public class DefaultPricing implements Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 202210311305L;

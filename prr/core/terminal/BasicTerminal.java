@@ -3,6 +3,10 @@ package prr.core.terminal;
 import java.io.Serial;
 
 import prr.core.client.Client;
+import prr.core.communication.Communication;
+import prr.core.communication.VideoCommunication;
+import prr.core.exception.ActionNotSupportedAtDestination;
+import prr.core.exception.ActionNotSupportedAtOrigin;
 
 public class BasicTerminal extends Terminal {
 
@@ -27,8 +31,17 @@ public class BasicTerminal extends Terminal {
 	//TODO add exception overrides to fancyterminal only functionalities
 
 	@Override
-	public void setSilence() {
-		// FIXME throw exception
+	public void startVideoCommunication(
+			VideoCommunication comm) throws ActionNotSupportedAtOrigin {
+
+		throw new ActionNotSupportedAtOrigin();
 	}
-	//FIXME add more functionality.
+
+	@Override
+	public void receiveVideoCommunication(
+			VideoCommunication comm) throws ActionNotSupportedAtDestination {
+
+		throw new ActionNotSupportedAtDestination();
+	}
+		
 }

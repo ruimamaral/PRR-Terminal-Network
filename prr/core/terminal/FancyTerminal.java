@@ -4,11 +4,18 @@ import java.io.Serial;
 
 import prr.core.client.Client;
 import prr.core.communication.Communication;
+import prr.core.communication.VideoCommunication;
+import prr.core.exception.ActionNotSupportedAtDestination;
+import prr.core.exception.ActionNotSupportedAtOrigin;
+import prr.core.exception.TargetBusyException;
+import prr.core.exception.TargetOffException;
+import prr.core.exception.TargetSilentException;
 
 public class FancyTerminal extends Terminal {
 
 	@Serial
 	private static final long serialVersionUID = 202210161925L;
+
 	private Object _ongoingCom;
 
 	public FancyTerminal(String key,
@@ -27,66 +34,26 @@ public class FancyTerminal extends Terminal {
 		return "FANCY";
 	}
 
-	/**
-	 * Checks if this terminal can end the current interactive communication.
-	 *
-	 * @return true if this terminal is busy (i.e., it has an active
-	 * 		interactive communication) and it was the originator of
-	 * 		this communication.
-	 **/
-	public boolean canEndCurrentCommunication()
-			throws IllegalAccessException {
-
-		return this._state.canEndCurrentCommunication();
-	}
-
-	/**
-	 * Checks if this terminal can start a new communication.
-	 *
-	 * @return true if this terminal is neither off neither busy, false otherwise.
-	 **/
-	public boolean canStartCommunication() {
-		return this._state.canStartCommunication();
-	}
-
-	public void startInteractiveCommunication(
-			Communication comm)	throws IllegalAccessException {
-
-		if(this.canStartCommunication()) {
-			this._ongoingCom = comm;
-			this.addCommunication(comm);
-			this._state.setBusy(true);
-		} else {
-			throw new IllegalAccessException();
-		}
-	}
-
-	public void receiveInteractiveCommunication(Communication comm)
-			throws TargetOffException, TargetBusyException,
-			TargetSilentException, IllegalAccessException {
-			
-		this._state.receiveInteractiveCommunication(comm);
-	}
-
-	public void sendTextCommunication(
-			Communication comm) throws IllegalAccessException {
-
+	@Override
+	public void startVideoCommunication(
+			VideoCommunication comm) throws IllegalAccessException,
+			TargetOffException, TargetBusyException, TargetSilentException,
+			ActionNotSupportedAtDestination, ActionNotSupportedAtOrigin {
+		
+		// check not needed but in place in case method is misused	
 		if (this.canStartCommunication()) {
-			this.addCommunication(comm);
-			comm.setCost(this.getPriceTable());
+			comm.getReceiver().receiveVideoCommunication(comm);
+			this.startInteractiveCommunication(comm);
 		} else {
 			throw new IllegalAccessException();
 		}
 	}
 
-	public void receiveTextCommunication(
-			Communication comm) throws TargetOffException {
+	@Override
+	protected void receiveVideoCommunication(
+			VideoCommunication comm) throws IllegalAccessException,
+			TargetOffException, TargetBusyException, TargetSilentException {
 
-		this._state.receiveTextCommunication(comm);
+		this.receiveInteractiveCommunication(comm);
 	}
-
-	public void endCurrentCommunication() throws IllegalAccessException {
-		this._state.endCurrentCommunication();
-	}
-	//FIXME add more functionality.
 }

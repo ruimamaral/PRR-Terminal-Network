@@ -1,6 +1,7 @@
 package prr.core.communication;
 
 import java.io.Serial;
+import java.io.Serializable;
 
 import prr.core.client.Client;
 import prr.core.pricetable.PriceTable;
@@ -8,7 +9,7 @@ import prr.core.terminal.Terminal;
 import prr.util.Visitable;
 import prr.util.Visitor;
 
-public abstract class Communication implements Visitable {
+public abstract class Communication implements Visitable, Serializable {
 
 	@Serial
 	private static final long serialVersionUID = 202210311305L;
@@ -52,6 +53,9 @@ public abstract class Communication implements Visitable {
 	public Client getClient() {
 		return this._sender.getClient();
 	}
+	public Terminal getReceiver() {
+		return this._receiver;
+	}
 
 	public void setCost(PriceTable priceTable) {
 		double cost = this.calculateCost(priceTable);
@@ -62,6 +66,6 @@ public abstract class Communication implements Visitable {
 	protected abstract double calculateCost(PriceTable priceTable);
 
 	public boolean isFriendly() {
-		return this._friendly;
+		return this._friendly; // mudar isto para sender.isFriend(receiver.getKey());
 	}
 }
