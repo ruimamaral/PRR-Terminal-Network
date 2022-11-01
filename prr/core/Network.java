@@ -98,14 +98,14 @@ public class Network implements Serializable {
 			TargetSilentException, UnknownTerminalKeyException {
 
 		Terminal receiver = this.getTerminal(receiverKey);
-		int size = this._communications.size();
+		int key = this._communications.size() + 1;
 		Communication newComm;
 
 		switch (type) {
 			case "VIDEO" -> newComm =
-					new VideoCommunication(size, sender, receiver);
+					new VideoCommunication(key, sender, receiver);
 			case "VOICE" -> newComm =
-					new VoiceCommunication(size, sender, receiver);
+					new VoiceCommunication(key, sender, receiver);
 			default -> throw new IllegalArgumentException();
 		}
 		this.startInteractiveCommunication(sender, receiver, newComm);
@@ -116,21 +116,29 @@ public class Network implements Serializable {
 			throws TargetBusyException,
 			TargetOffException, TargetSilentException {
 
-		receiver.receiveInteractiveCommunication(communication);
-		sender.startInteractiveCommunication(communication);
+		try {
+			receiver.receiveInteractiveCommunication(communication);
+			sender.startInteractiveCommunication(communication);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();	// Unexpected behaviour
+		}
 		this.addCommunication(communication);
 	}
 
 	public void registerTextCommunication(
 			Terminal sender, String receiverKey, String message) 
-			throws TargetOffException {
+			throws TargetOffException, UnknownTerminalKeyException {
 		
-		Terminal receiver = this.getTerminal(receiverKey); // meter throws !!!
-		TextCommunication newComm = new TextCommunication(
+		Terminal receiver = this.getTerminal(receiverKey);
+		Communication newComm = new TextCommunication(
 				this._communications.size(), sender, receiver, message);
 
-		receiver.receiveTextCommunication(newComm);
-		sender.sendTextCommunication(newComm);
+		receiver.receiveTextCommunication();
+		try {
+			sender.sendTextCommunication(newComm);
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();	// Unexpected behaviour
+		}
 		this.addCommunication(newComm);
 	}
 

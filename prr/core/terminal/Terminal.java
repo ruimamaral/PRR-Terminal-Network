@@ -2,7 +2,6 @@ package prr.core.terminal;
 
 import prr.core.client.Client;
 import prr.core.communication.Communication;
-import prr.core.communication.TextCommunication;
 import prr.core.exception.TargetBusyException;
 import prr.core.exception.TargetOffException;
 import prr.core.exception.TargetSilentException;
@@ -33,7 +32,7 @@ abstract public class Terminal implements Serializable, Visitable {
 
 	private Map<String, Terminal> _friends = new TreeMap<String, Terminal>();
 
-	private Map<Integer, Communication> _communications =
+	private Map<Integer, Communication> _sentComms =
 			new TreeMap<Integer, Communication>();
 	
 	private Communication _ongoingCom;
@@ -128,7 +127,7 @@ abstract public class Terminal implements Serializable, Visitable {
 	}
 
 	public void addCommunication(Communication communication) {
-		this._communications.put(communication.getKey(), communication);
+		this._sentComms.put(communication.getKey(), communication);
 	}
 
 	/**
@@ -156,31 +155,40 @@ abstract public class Terminal implements Serializable, Visitable {
 	public void startInteractiveCommunication(
 			Communication comm)	throws IllegalAccessException {
 
-		if (!this.canStartCommunication()) {
+		if(this.canStartCommunication()) {
+			Terminal.this._ongoingCom = comm;
+			Terminal.this.addCommunication(comm);
+			this._state.setBusy(true);
+		} else {
 			throw new IllegalAccessException();
 		}
-		this.addCommunication(comm);
-		this._ongoingCom = comm;
-		this._state.setBusy();
 	}
 
-	public void receiveInteractiveCommunication(
-			Communication comm) throws TargetOffException,
-			TargetBusyException, TargetSilentException {
+	public void receiveInteractiveCommunication(Communication comm)
+			throws TargetOffException, TargetBusyException,
+			TargetSilentException, IllegalAccessException {
 			
 		this._state.receiveInteractiveCommunication(comm);
 	}
 
-	public void receiveTextCommunication(
-			TextCommunication comm) throws TargetOffException {
+	public void sendTextCommunication(
+			Communication comm) throws IllegalAccessException {
 
-		this._state.receiveTextCommunication(comm);
+		if (this.canStartCommunication()) {
+			Terminal.this.addCommunication(comm);
+			comm.setCost(Terminal.this.getPriceTable());
+		} else {
+			throw new IllegalAccessException();
+		}
 	}
 
-	public void sendTextCommunication(
-			TextCommunication comm) throws IllegalAccessException {
-		
-		this._state.sendTextCommunication(comm);
+	public void receiveTextCommunication() throws TargetOffException {
+
+		this._state.receiveTextCommunication();
+	}
+
+	public void endCurrentCommunication() throws IllegalAccessException {
+		this._state.endCurrentCommunication();
 	}
 
 	// Class that manages terminal state dependent functionalities.
@@ -196,37 +204,40 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected void setIdle() throws IllegalAccessException {
 			setState(new IdleTerminalState());
 		}
-		protected void setBusy() throws IllegalAccessException {
-			setState(new BusyTerminalState(Terminal.this._state));
+		protected void setBusy(boolean isSender) throws IllegalAccessException {
+			if (isSender) {
+				setState(new SenderBusyTerminalState(Terminal.this._state));
+			} else {
+				setState(new BusyTerminalState(Terminal.this._state));
+			}
 		}
 		protected void setSilence() throws IllegalAccessException {
 			setState(new SilenceTerminalState());
 		}
-		protected void setNotBusy() throws IllegalAccessException {
-			throw new IllegalAccessException();
-		}
 
 		protected abstract String getStateName();
 
-		protected abstract boolean canStartCommunication();
-
-		protected abstract boolean canEndCurrentCommunication();
-
-		protected void sendTextCommunication(TextCommunication comm) {
-			Terminal.this.addCommunication(comm);
-			comm.setCost(Terminal.this.getPriceTable());
+		protected  boolean canStartCommunication() {
+			return false;
 		}
 
-		protected void receiveTextCommunication(TextCommunication comm) {}
+		protected  boolean canEndCurrentCommunication() {
+			return false;
+		}
 
-		protected void receiveInteractiveCommunication(
-				Communication comm) throws IllegalAccessException {	//TODO fix throw in other receive method also setBusy can only be used when terminal is Idle or silent
+		protected void receiveTextCommunication() throws TargetOffException {}
+
+		protected void receiveInteractiveCommunication(Communication comm)
+			throws TargetOffException, TargetBusyException,
+			TargetSilentException, IllegalAccessException {
 
 			Terminal.this._ongoingCom = comm;
-			this.setBusy();
+			this.setBusy(false);
 		}
 
-		protected void endCurrentCommunication() throws IllegalAccessException {
+		protected Communication endCurrentCommunication()
+				throws IllegalAccessException {
+
 			throw new IllegalAccessException();
 		}
 	}
@@ -243,7 +254,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		}
 	
 		@Override
-		protected void setBusy() throws IllegalAccessException {
+		protected void setBusy(boolean isSender) throws IllegalAccessException {
 			throw new IllegalAccessException();
 		}
 
@@ -261,40 +272,45 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected void turnOff() throws IllegalAccessException {
 			throw new IllegalAccessException();
 		}
-
-		@Override
-		protected void setNotBusy() {
-			this.setState(this._oldState);
-		}
 	
 		@Override
 		protected String getStateName() {
 			return "BUSY";
 		}
-	
+
 		@Override
-		protected boolean canStartCommunication() {
-			return false;
-		}
-	
-		@Override
-		protected boolean canEndCurrentCommunication() {
-			return (Terminal.this._ongoingCom != null &&
-					Terminal.this._communications
-					.containsKey(Terminal.this._ongoingCom.getKey()));
+		protected void receiveInteractiveCommunication(
+				Communication comm) throws TargetBusyException {
+
+			throw new TargetBusyException();
 		}
 
 		@Override
-		protected void endCurrentCommunication()
-				throws IllegalAccessException {
+		protected Communication endCurrentCommunication() {
 
-			if (!this.canEndCurrentCommunication()) {
-				throw new IllegalAccessException();
-			}
 			Communication comm = Terminal.this._ongoingCom;
 			Terminal.this._ongoingCom = null;
+			this.setState(this._oldState);
+			return comm;
+		}
+	}
+
+	public class SenderBusyTerminalState extends Terminal.BusyTerminalState {
+
+		protected SenderBusyTerminalState(TerminalState oldState) {
+			super(oldState);
+		}
+
+		@Override
+		protected boolean canEndCurrentCommunication() {
+			return true;
+		}
+
+		@Override
+		protected Communication endCurrentCommunication() {
+			Communication comm = super.endCurrentCommunication();
 			comm.setCost(Terminal.this.getPriceTable());
-			this.setNotBusy();
+			return comm;
 		}
 	}
 
@@ -317,11 +333,6 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected boolean canStartCommunication() {
 			return true;
 		}
-	
-		@Override
-		protected boolean canEndCurrentCommunication() {
-			return false;
-		}
 	}
 	
 	public class OffTerminalState extends Terminal.TerminalState {
@@ -335,7 +346,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		}
 
 		@Override
-		protected void setBusy() throws IllegalAccessException {
+		protected void setBusy(boolean isSender) throws IllegalAccessException {
 			throw new IllegalAccessException();
 		}
 	
@@ -343,15 +354,17 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected String getStateName() {
 			return "OFF";
 		}
-	
+
 		@Override
-		protected boolean canStartCommunication() {
-			return false;
+		protected void receiveTextCommunication() throws TargetOffException {
+			throw new TargetOffException();
 		}
-	
+
 		@Override
-		protected boolean canEndCurrentCommunication() {
-			return false;
+		protected void receiveInteractiveCommunication(
+				Communication comm) throws TargetOffException {
+
+			throw new TargetOffException();
 		}
 	}
 
@@ -372,12 +385,14 @@ abstract public class Terminal implements Serializable, Visitable {
 	
 		@Override
 		protected boolean canStartCommunication() {
-			return false;
+			return true;
 		}
-	
+
 		@Override
-		protected boolean canEndCurrentCommunication() {
-			return false;
+		protected void receiveInteractiveCommunication(
+				Communication comm) throws TargetSilentException {
+
+			throw new TargetSilentException();
 		}
 	}
 }
