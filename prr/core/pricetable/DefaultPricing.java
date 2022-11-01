@@ -5,7 +5,7 @@ import java.io.Serial;
 public class DefaultPricing {
 
 	@Serial
-	private static final long serialVersionUID = 202210161305L;
+	private static final long serialVersionUID = 202210311305L;
 
 	private static PriceTable normal;
 	private static PriceTable gold;
@@ -31,5 +31,4 @@ public class DefaultPricing {
 		}
 		return platinum;
 	}
-	
 }

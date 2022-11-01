@@ -10,8 +10,10 @@ import prr.util.Visitable;
 import prr.util.Visitor;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.io.Serial;
@@ -34,6 +36,8 @@ abstract public class Terminal implements Serializable, Visitable {
 
 	private Map<Integer, Communication> _sentComms =
 			new TreeMap<Integer, Communication>();
+
+	private List<Client> _clientsToNotify = new ArrayList<Client>();
 	
 	private Communication _ongoingCom;
 
@@ -57,6 +61,14 @@ abstract public class Terminal implements Serializable, Visitable {
 		return visitor.visit(this);
 	}
 
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof Terminal) {
+			return this.getKey().equalsIgnoreCase(((Terminal) other).getKey());
+		}
+		return false;
+	}
+
 	public abstract String getTypeName();
 
 	public abstract boolean hasOngoingCom();
@@ -70,8 +82,11 @@ abstract public class Terminal implements Serializable, Visitable {
 	public int getDebt() {
 		return (int) Math.round(this._debt);
 	}
+	public Client getClient() {
+		return this._client;
+	}
 	public boolean hasActivity() {
-		return this._isActive;
+		return this._sentComms.size() == 0;
 	}
 	public String getClientKey() {
 		return this._client.getKey();
@@ -84,6 +99,10 @@ abstract public class Terminal implements Serializable, Visitable {
 	}
 	public PriceTable getPriceTable() {
 		return this._client.getPriceTable();
+	}
+
+	protected void setOngoingComm(Communication comm) {
+		this._ongoingCom = comm;
 	}
 
 	public void addDebt(double amount) {
@@ -99,6 +118,9 @@ abstract public class Terminal implements Serializable, Visitable {
 	}
 	public void setSilence() throws IllegalAccessException {
 		this._state.setSilence();
+	}
+	protected void setBusy(boolean isSender) throws IllegalAccessException {
+		throw new IllegalAccessException();
 	}
 
 	private String checkKey(String key) throws IllegalArgumentException {
@@ -126,8 +148,16 @@ abstract public class Terminal implements Serializable, Visitable {
 		return this._friends.containsKey(key);
 	}
 
-	public void addCommunication(Communication communication) {
+	private void addCommunication(Communication communication) {
 		this._sentComms.put(communication.getKey(), communication);
+	}
+
+	private void logCommunicationAttempt(Communication comm) {
+		Client client = comm.getClient();
+
+		if (client.hasNotificationsEnabled()) {
+			this._clientsToNotify.add(client);
+		}
 	}
 
 	/**
@@ -156,8 +186,8 @@ abstract public class Terminal implements Serializable, Visitable {
 			Communication comm)	throws IllegalAccessException {
 
 		if(this.canStartCommunication()) {
-			Terminal.this._ongoingCom = comm;
-			Terminal.this.addCommunication(comm);
+			this._ongoingCom = comm;
+			this.addCommunication(comm);
 			this._state.setBusy(true);
 		} else {
 			throw new IllegalAccessException();
@@ -175,21 +205,28 @@ abstract public class Terminal implements Serializable, Visitable {
 			Communication comm) throws IllegalAccessException {
 
 		if (this.canStartCommunication()) {
-			Terminal.this.addCommunication(comm);
-			comm.setCost(Terminal.this.getPriceTable());
+			this.addCommunication(comm);
+			comm.setCost(this.getPriceTable());
 		} else {
 			throw new IllegalAccessException();
 		}
 	}
 
-	public void receiveTextCommunication() throws TargetOffException {
+	public void receiveTextCommunication(
+			Communication comm) throws TargetOffException {
 
-		this._state.receiveTextCommunication();
+		this._state.receiveTextCommunication(comm);
 	}
 
 	public void endCurrentCommunication() throws IllegalAccessException {
 		this._state.endCurrentCommunication();
 	}
+
+	/*
+	 *
+	 *  Inner Classes ------------------------------------------------
+	 * 
+	 */
 
 	// Class that manages terminal state dependent functionalities.
 	public abstract class TerminalState implements Serializable {
@@ -225,7 +262,8 @@ abstract public class Terminal implements Serializable, Visitable {
 			return false;
 		}
 
-		protected void receiveTextCommunication() throws TargetOffException {}
+		protected void receiveTextCommunication(
+				Communication comm) throws TargetOffException {}
 
 		protected void receiveInteractiveCommunication(Communication comm)
 			throws TargetOffException, TargetBusyException,
@@ -281,7 +319,8 @@ abstract public class Terminal implements Serializable, Visitable {
 		@Override
 		protected void receiveInteractiveCommunication(
 				Communication comm) throws TargetBusyException {
-
+			
+			Terminal.this.logCommunicationAttempt(comm);
 			throw new TargetBusyException();
 		}
 
@@ -356,7 +395,10 @@ abstract public class Terminal implements Serializable, Visitable {
 		}
 
 		@Override
-		protected void receiveTextCommunication() throws TargetOffException {
+		protected void receiveTextCommunication(
+				Communication comm) throws TargetOffException {
+			
+			Terminal.this.logCommunicationAttempt(comm);
 			throw new TargetOffException();
 		}
 
@@ -364,6 +406,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected void receiveInteractiveCommunication(
 				Communication comm) throws TargetOffException {
 
+			Terminal.this.logCommunicationAttempt(comm);
 			throw new TargetOffException();
 		}
 	}
@@ -392,6 +435,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected void receiveInteractiveCommunication(
 				Communication comm) throws TargetSilentException {
 
+			Terminal.this.logCommunicationAttempt(comm);
 			throw new TargetSilentException();
 		}
 	}

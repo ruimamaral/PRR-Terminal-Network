@@ -8,7 +8,7 @@ import prr.core.communication.*;
 public class DefaultPriceTable implements PriceTable {
 
 	@Serial
-	private static final long serialVersionUID = 202210161305L;
+	private static final long serialVersionUID = 202210311305L;
 
 	private double _videoRate;
 
@@ -57,6 +57,4 @@ public class DefaultPriceTable implements PriceTable {
 		double cost = this._videoRate * videoComm.getUnits();
 		return videoComm.isFriendly() ? cost : cost / 2;
 	}
-
-	
 }

@@ -27,14 +27,66 @@ public class FancyTerminal extends Terminal {
 		return "FANCY";
 	}
 
-	public void startInteractiveCommunication(Communication communication) {
-		// FIXME
+	/**
+	 * Checks if this terminal can end the current interactive communication.
+	 *
+	 * @return true if this terminal is busy (i.e., it has an active
+	 * 		interactive communication) and it was the originator of
+	 * 		this communication.
+	 **/
+	public boolean canEndCurrentCommunication()
+			throws IllegalAccessException {
+
+		return this._state.canEndCurrentCommunication();
 	}
 
-	public void receiveInteractiveCommunication(Communication communication) {
-		this.addCommunication(communication);
-		// FIXME
+	/**
+	 * Checks if this terminal can start a new communication.
+	 *
+	 * @return true if this terminal is neither off neither busy, false otherwise.
+	 **/
+	public boolean canStartCommunication() {
+		return this._state.canStartCommunication();
 	}
 
+	public void startInteractiveCommunication(
+			Communication comm)	throws IllegalAccessException {
+
+		if(this.canStartCommunication()) {
+			this._ongoingCom = comm;
+			this.addCommunication(comm);
+			this._state.setBusy(true);
+		} else {
+			throw new IllegalAccessException();
+		}
+	}
+
+	public void receiveInteractiveCommunication(Communication comm)
+			throws TargetOffException, TargetBusyException,
+			TargetSilentException, IllegalAccessException {
+			
+		this._state.receiveInteractiveCommunication(comm);
+	}
+
+	public void sendTextCommunication(
+			Communication comm) throws IllegalAccessException {
+
+		if (this.canStartCommunication()) {
+			this.addCommunication(comm);
+			comm.setCost(this.getPriceTable());
+		} else {
+			throw new IllegalAccessException();
+		}
+	}
+
+	public void receiveTextCommunication(
+			Communication comm) throws TargetOffException {
+
+		this._state.receiveTextCommunication(comm);
+	}
+
+	public void endCurrentCommunication() throws IllegalAccessException {
+		this._state.endCurrentCommunication();
+	}
 	//FIXME add more functionality.
 }

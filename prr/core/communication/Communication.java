@@ -1,18 +1,23 @@
 package prr.core.communication;
 
+import java.io.Serial;
+
+import prr.core.client.Client;
 import prr.core.pricetable.PriceTable;
 import prr.core.terminal.Terminal;
 import prr.util.Visitable;
 import prr.util.Visitor;
 
 public abstract class Communication implements Visitable {
+
+	@Serial
+	private static final long serialVersionUID = 202210311305L;
+
 	private int _units;
 
 	private int _key;
 
 	private boolean _isOngoing;
-
-	private boolean _isPaid;
 
 	private double _cost;
 
@@ -25,7 +30,6 @@ public abstract class Communication implements Visitable {
 	protected Communication(int key, Terminal sender, Terminal receiver) {
 		this._key = key;
 		this._isOngoing = true;
-		this._isPaid = false;
 		this._receiver = receiver;
 		this._sender = sender;
 		this._friendly = sender.isFriend(receiver.getKey());
@@ -39,13 +43,14 @@ public abstract class Communication implements Visitable {
 	public int getKey() {
 		return this._key;
 	}
-
 	public int getUnits() {
-		return this._key;
+		return this._units;
 	}
-
 	public double getCost() {
 		return this._cost;
+	}
+	public Client getClient() {
+		return this._sender.getClient();
 	}
 
 	public void setCost(PriceTable priceTable) {
