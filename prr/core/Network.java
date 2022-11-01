@@ -17,6 +17,8 @@ import prr.core.exception.DuplicateTerminalKeyException;
 import prr.core.exception.TargetBusyException;
 import prr.core.exception.TargetOffException;
 import prr.core.exception.TargetSilentException;
+import prr.core.exception.ActionNotSupportedAtDestination;
+import prr.core.exception.ActionNotSupportedAtOrigin;
 import prr.core.exception.DuplicateClientKeyException;
 import prr.core.client.Client;
 import prr.core.communication.Communication;
@@ -95,46 +97,23 @@ public class Network implements Serializable {
 	public void registerInteractiveCommunication(
 			String type, Terminal sender, String receiverKey)
 			throws  TargetBusyException, TargetOffException,
-			TargetSilentException, UnknownTerminalKeyException {
+			TargetSilentException, UnknownTerminalKeyException,
+			ActionNotSupportedAtDestination, ActionNotSupportedAtOrigin {
 
 		Terminal receiver = this.getTerminal(receiverKey);
 		int key = this._communications.size() + 1;
 
-		switch (type) {
-			case "VIDEO" -> this.startVideoCommunication(sender, receiver, 
-					new VideoCommunication(key, sender, receiver));
-			case "VOICE" -> this.startVoiceCommunication(sender, receiver,
-					new VoiceCommunication(key, sender, receiver));
-			default -> throw new IllegalArgumentException();
-		}
-	}
-
-	private void startVideoCommunication(
-			Terminal sender, Terminal receiver,
-			VideoCommunication communication) throws
-			TargetBusyException, TargetOffException, TargetSilentException {
-
 		try {
-			receiver.receiveVideoCommunication(communication);
-			sender.startVideoCommunication(communication);
+			switch (type) {
+				case "VIDEO" -> sender.startVideoCommunication( 
+						new VideoCommunication(key, sender, receiver));
+				case "VOICE" -> sender.startVoiceCommunication(
+						new VoiceCommunication(key, sender, receiver));
+				default -> throw new IllegalArgumentException();
+			}
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();	// Unexpected behaviour
 		}
-		this.addCommunication(communication);
-	}
-
-	private void startVoiceCommunication(
-			Terminal sender, Terminal receiver,
-			VoiceCommunication communication) throws
-			TargetBusyException, TargetOffException, TargetSilentException {
-
-		try {
-			receiver.receiveVoiceCommunication(communication);
-			sender.startVoiceCommunication(communication);
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();	// Unexpected behaviour
-		}
-		this.addCommunication(communication);
 	}
 
 	public void registerTextCommunication(
