@@ -15,16 +15,17 @@ class DoShowUnusedTerminals extends Command<Network> {
 		super(Label.SHOW_UNUSED_TERMINALS, receiver);
 	}
 
-	private final Visitor<Void> _stringMaker = new StringMaker();
-
 	@Override
 	protected final void execute() throws CommandException {
+
+		final Visitor<Void> stringMaker = new StringMaker();
+
 		if (_receiver.getClientCount() != 0) {
-			_receiver.visitAll(this._stringMaker,
+			_receiver.visitAll(stringMaker,
 					_receiver.getAllTerminals(),
 					term -> (!term.hasActivity()));
 		}
-		String text = this._stringMaker.toString();
+		String text = stringMaker.toString();
 
 		if (text.length() != 0) {
 			_display.popup(text);

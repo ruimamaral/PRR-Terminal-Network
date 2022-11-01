@@ -87,6 +87,11 @@ abstract public class Terminal implements Serializable, Visitable {
 		return this._client.getPriceTable();
 	}
 
+	public void addDebt(double amount) {
+		this._debt += amount;
+		this._client.addDebt(amount);
+	}
+
 	public void turnOff() throws IllegalAccessException { // TODO catch exceptions
 		this._state.turnOff();
 	}
@@ -197,6 +202,9 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected void setSilence() throws IllegalAccessException {
 			setState(new SilenceTerminalState());
 		}
+		protected void setNotBusy() throws IllegalAccessException {
+			throw new IllegalAccessException();
+		}
 
 		protected abstract String getStateName();
 
@@ -206,8 +214,7 @@ abstract public class Terminal implements Serializable, Visitable {
 
 		protected void sendTextCommunication(TextCommunication comm) {
 			Terminal.this.addCommunication(comm);
-			Terminal.this._debt +=
-					comm.setCost(Terminal.this.getPriceTable());
+			comm.setCost(Terminal.this.getPriceTable());
 		}
 
 		protected void receiveTextCommunication(TextCommunication comm) {}
@@ -254,6 +261,11 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected void turnOff() throws IllegalAccessException {
 			throw new IllegalAccessException();
 		}
+
+		@Override
+		protected void setNotBusy() {
+			this.setState(this._oldState);
+		}
 	
 		@Override
 		protected String getStateName() {
@@ -267,8 +279,9 @@ abstract public class Terminal implements Serializable, Visitable {
 	
 		@Override
 		protected boolean canEndCurrentCommunication() {
-			return Terminal.this._communications
-					.containsKey(Terminal.this._ongoingCom.getKey());
+			return (Terminal.this._ongoingCom != null &&
+					Terminal.this._communications
+					.containsKey(Terminal.this._ongoingCom.getKey()));
 		}
 
 		@Override
@@ -280,10 +293,8 @@ abstract public class Terminal implements Serializable, Visitable {
 			}
 			Communication comm = Terminal.this._ongoingCom;
 			Terminal.this._ongoingCom = null;
-			double cost = comm.setCost(Terminal.this.getPriceTable());
-			Terminal.this._debt += cost;
-			comm.getSender().addDebt(cost);
-			this.setState(this._oldState);
+			comm.setCost(Terminal.this.getPriceTable());
+			this.setNotBusy();
 		}
 	}
 
@@ -293,7 +304,9 @@ abstract public class Terminal implements Serializable, Visitable {
 		private static final long serialVersionUID = 202210161925L;
 	
 		@Override
-		protected void setIdle() {}
+		protected void setIdle() throws IllegalAccessException {
+			throw new IllegalAccessException();
+		}
 	
 		@Override
 		protected String getStateName() {
@@ -317,7 +330,14 @@ abstract public class Terminal implements Serializable, Visitable {
 		private static final long serialVersionUID = 202210161925L;
 	
 		@Override
-		protected void turnOff() {}
+		protected void turnOff() throws IllegalAccessException {
+			throw new IllegalAccessException();
+		}
+
+		@Override
+		protected void setBusy() throws IllegalAccessException {
+			throw new IllegalAccessException();
+		}
 	
 		@Override
 		protected String getStateName() {
@@ -341,7 +361,9 @@ abstract public class Terminal implements Serializable, Visitable {
 		private static final long serialVersionUID = 202210161925L;
 	
 		@Override
-		protected void setSilence() {}
+		protected void setSilence() throws IllegalAccessException {
+			throw new IllegalAccessException();
+		}
 	
 		@Override
 		protected String getStateName() {

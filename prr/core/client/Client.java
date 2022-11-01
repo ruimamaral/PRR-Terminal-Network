@@ -78,6 +78,10 @@ public class Client implements Serializable, Visitable {
 		this._terminals.put(terminal.getKey(), terminal);
 	}
 
+	public void addDebt(double amount) {
+		this._debt += amount;
+	}
+
 	public abstract class ClientStatus implements Serializable {
 
 		@Serial
@@ -112,4 +116,5 @@ public class Client implements Serializable, Visitable {
 			return "NORMAL";
 		}
 	}
+
 }

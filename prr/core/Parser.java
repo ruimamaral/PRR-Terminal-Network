@@ -82,7 +82,8 @@ public class Parser {
 			}
 		} catch (IllegalArgumentException
 				| UnknownClientKeyException 
-				| DuplicateTerminalKeyException e) {
+				| DuplicateTerminalKeyException
+				| IllegalAccessException e) {
 			throw new UnrecognizedEntryException("Invalid specification: " + line, e);
 		}
 }

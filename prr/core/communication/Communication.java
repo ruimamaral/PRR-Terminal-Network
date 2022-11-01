@@ -48,10 +48,10 @@ public abstract class Communication implements Visitable {
 		return this._cost;
 	}
 
-	public double setCost(PriceTable priceTable) {
+	public void setCost(PriceTable priceTable) {
 		double cost = this.calculateCost(priceTable);
 		this._cost = cost;
-		return cost;
+		this._sender.addDebt(cost);
 	}
 
 	protected abstract double calculateCost(PriceTable priceTable);
