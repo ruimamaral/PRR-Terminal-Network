@@ -20,6 +20,8 @@ public abstract class Communication implements Visitable, Serializable {
 
 	private boolean _isOngoing;
 
+	private boolean _isPaid;
+
 	private double _cost;
 
 	private Terminal _sender;
@@ -28,12 +30,14 @@ public abstract class Communication implements Visitable, Serializable {
 
 	private boolean _friendly;
 
-	protected Communication(int key, Terminal sender, Terminal receiver) {
+	protected Communication(int key,
+			Terminal sender, Terminal receiver) {
 		this._key = key;
-		this._isOngoing = true;
 		this._receiver = receiver;
 		this._sender = sender;
 		this._friendly = sender.isFriend(receiver.getKey());
+		this._isPaid = false;
+		this._isOngoing = true;
 	}
 
 	@Override
@@ -64,6 +68,7 @@ public abstract class Communication implements Visitable, Serializable {
 		double cost = this.calculateCost(priceTable);
 		this._cost = cost;
 		this._sender.addDebt(cost);
+		this._isOngoing = false;
 	}
 
 	protected abstract double calculateCost(PriceTable priceTable);
