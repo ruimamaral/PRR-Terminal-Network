@@ -344,7 +344,8 @@ abstract public class Terminal implements Serializable, Visitable {
 		}
 
 		@Override
-		protected Communication endCurrentCommunication() {
+		protected Communication endCurrentCommunication()
+				throws IllegalAccessException {
 
 			Communication comm = Terminal.this._ongoingCom;
 			Terminal.this._ongoingCom = null;
@@ -368,8 +369,11 @@ abstract public class Terminal implements Serializable, Visitable {
 		}
 
 		@Override
-		protected Communication endCurrentCommunication() {
+		protected Communication endCurrentCommunication()
+				throws IllegalAccessException {
+
 			Communication comm = super.endCurrentCommunication();
+			comm.getReceiver().endCurrentCommunication();
 			comm.setCost(Terminal.this.getPriceTable());
 			return comm;
 		}

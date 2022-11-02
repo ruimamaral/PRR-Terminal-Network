@@ -38,7 +38,7 @@ public abstract class Communication implements Visitable, Serializable {
 
 	@Override
 	public <T> T accept(Visitor<T> visitor) {
-		visitor.visit(this);
+		return visitor.visit(this);
 	}
 
 	public int getKey() {
@@ -69,6 +69,6 @@ public abstract class Communication implements Visitable, Serializable {
 	protected abstract double calculateCost(PriceTable priceTable);
 
 	public boolean isFriendly() {
-		return this._friendly; // mudar isto para sender.isFriend(receiver.getKey());
+		return this._friendly; // TODO mudar isto para sender.isFriend(receiver.getKey());
 	}
 }

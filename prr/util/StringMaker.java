@@ -3,6 +3,7 @@ package prr.util;
 import java.util.Collection;
 
 import prr.core.client.Client;
+import prr.core.communication.Communication;
 import prr.core.terminal.Terminal;
 
 public class StringMaker implements Visitor<Void> {
@@ -49,6 +50,11 @@ public class StringMaker implements Visitor<Void> {
 		}
 		this._text.append("\n");
 
+		return null;
+	}
+
+	public Void visit(Communication comm) {
+		// TODO make comm string
 		return null;
 	}
 
