@@ -165,7 +165,6 @@ abstract public class Terminal implements Serializable, Visitable {
 	 * 		this communication.
 	 **/
 	public boolean canEndCurrentCommunication() {
-
 		return this._state.canEndCurrentCommunication();
 	}
 
@@ -223,10 +222,12 @@ abstract public class Terminal implements Serializable, Visitable {
 		this._state.receiveInteractiveCommunication(comm);
 	}
 
-	public void sendTextCommunication(
-			Communication comm) throws IllegalAccessException {
+	public void sendTextCommunication(Communication comm)
+			throws IllegalAccessException, TargetOffException {
 
+		// check not needed but in place in case method is misused	
 		if (this.canStartCommunication()) {
+			comm.getReceiver().receiveTextCommunication(comm);
 			this.addCommunication(comm);
 			comm.setCost(this.getPriceTable());
 		} else {
@@ -234,7 +235,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		}
 	}
 
-	public void receiveTextCommunication(
+	protected void receiveTextCommunication(
 			Communication comm) throws TargetOffException {
 
 		this._state.receiveTextCommunication(comm);
@@ -287,13 +288,9 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected void receiveTextCommunication(
 				Communication comm) throws TargetOffException {}
 
-		protected void receiveInteractiveCommunication(Communication comm)
+		protected abstract void receiveInteractiveCommunication(Communication comm)
 			throws TargetOffException, TargetBusyException,
-			TargetSilentException, IllegalAccessException {
-
-			Terminal.this._ongoingCom = comm;
-			this.setBusy(false);
-		}
+			TargetSilentException, IllegalAccessException;
 
 		protected Communication endCurrentCommunication()
 				throws IllegalAccessException {
@@ -396,6 +393,15 @@ abstract public class Terminal implements Serializable, Visitable {
 		@Override
 		protected boolean canStartCommunication() {
 			return true;
+		}
+
+		@Override
+		protected void receiveInteractiveCommunication(Communication comm)
+			throws TargetOffException, TargetBusyException,
+			TargetSilentException, IllegalAccessException {
+
+			Terminal.this._ongoingCom = comm;
+			this.setBusy(false);
 		}
 	}
 	

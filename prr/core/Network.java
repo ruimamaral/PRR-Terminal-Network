@@ -94,14 +94,17 @@ public class Network implements Serializable {
 		return newClient;
 	}
 
-	public void registerInteractiveCommunication(
-			String type, Terminal sender, String receiverKey)
-			throws  TargetBusyException, TargetOffException,
-			TargetSilentException, UnknownTerminalKeyException,
+	public void registerInteractiveCommunication(String type, Terminal sender,
+			String receiverKey) throws  TargetBusyException,
+			IllegalArgumentException, TargetSilentException,
+			UnknownTerminalKeyException, TargetOffException, 
 			ActionNotSupportedAtDestination, ActionNotSupportedAtOrigin {
 
 		Terminal receiver = this.getTerminal(receiverKey);
 		int key = this._communications.size() + 1;
+		if (receiver.equals(sender)) {
+			throw new IllegalArgumentException();
+		}
 
 		try {
 			switch (type) {
@@ -122,9 +125,8 @@ public class Network implements Serializable {
 		
 		Terminal receiver = this.getTerminal(receiverKey);
 		Communication newComm = new TextCommunication(
-				this._communications.size(), sender, receiver, message);
+				this._communications.size() + 1, sender, receiver, message);
 
-		receiver.receiveTextCommunication(newComm);
 		try {
 			sender.sendTextCommunication(newComm);
 		} catch (IllegalAccessException e) {
