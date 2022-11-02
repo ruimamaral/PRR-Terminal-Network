@@ -77,7 +77,7 @@ public class Parser {
 			switch(components[3]) {
 				case "ON" -> newTerm.setIdle();
 				case "OFF" -> newTerm.turnOff();
-				case "SILENCE" -> newTerm.setSilence();
+				case "SILENCE" -> newTerm.setSilent();
 				default -> throw new IllegalArgumentException();
 			}
 		} catch (IllegalArgumentException

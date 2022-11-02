@@ -2,9 +2,14 @@ package prr.core.client;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import prr.core.notification.DefaultDeliveryMethod;
+import prr.core.notification.Notification;
+import prr.core.notification.NotificationDeliveryMethod;
 import prr.core.pricetable.DefaultPricing;
 import prr.core.pricetable.PriceTable;
 import prr.core.terminal.Terminal;
@@ -32,6 +37,10 @@ public class Client implements Serializable, Visitable {
 
 	private double _debt;
 
+	private NotificationDeliveryMethod _deliveryMethod;
+
+	private List<Notification> _notifications = new ArrayList<Notification>();
+
 	public Client(String key, String name, int taxId) {
 		this._key = key;
 		this._name = name;
@@ -40,6 +49,7 @@ public class Client implements Serializable, Visitable {
 		this._status = new NormalClientStatus(); // default
 		this._debt = 0;
 		this._totalPaid = 0;
+		this._deliveryMethod = DefaultDeliveryMethod.getDefaultMethod();
 	}
 
 	public <T> T accept(Visitor<T> visitor) {
@@ -78,8 +88,16 @@ public class Client implements Serializable, Visitable {
 		this._terminals.put(terminal.getKey(), terminal);
 	}
 
+	public void addNotification(Notification notification) {
+		this._notifications.add(notification);
+	}
+
 	public void addDebt(double amount) {
 		this._debt += amount;
+	}
+
+	public void pushNotification(Notification notification) {
+		this._deliveryMethod.pushNotification(this, notification);
 	}
 
 	public abstract class ClientStatus implements Serializable {

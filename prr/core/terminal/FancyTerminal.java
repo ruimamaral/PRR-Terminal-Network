@@ -25,11 +25,6 @@ public class FancyTerminal extends Terminal {
 	}
 
 	@Override
-	public boolean hasOngoingCom() {
-		return this._ongoingCom != null;
-	}
-
-	@Override
 	public String getTypeName() {
 		return "FANCY";
 	}

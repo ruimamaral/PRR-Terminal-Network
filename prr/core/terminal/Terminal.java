@@ -9,6 +9,11 @@ import prr.core.exception.ActionNotSupportedAtOrigin;
 import prr.core.exception.TargetBusyException;
 import prr.core.exception.TargetOffException;
 import prr.core.exception.TargetSilentException;
+import prr.core.notification.BusyToIdle;
+import prr.core.notification.Notification;
+import prr.core.notification.OffToIdle;
+import prr.core.notification.OffToSilent;
+import prr.core.notification.SilentToIdle;
 import prr.core.pricetable.PriceTable;
 import prr.util.Visitable;
 import prr.util.Visitor;
@@ -20,6 +25,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+
 import java.io.Serial;
 
 /**
@@ -74,8 +80,6 @@ abstract public class Terminal implements Serializable, Visitable {
 	}
 
 	public abstract String getTypeName();
-
-	public abstract boolean hasOngoingCom();
 
 	public String getKey() {
 		return this._key;
@@ -155,6 +159,11 @@ abstract public class Terminal implements Serializable, Visitable {
 		if (client.hasNotificationsEnabled()) {
 			this._clientsToNotify.add(client);
 		}
+	}
+
+	private void pushNotifications(Notification notification) {
+		this._clientsToNotify.forEach(c -> c.pushNotification(notification));
+		this._clientsToNotify.clear();
 	}
 
 	/**
@@ -259,21 +268,24 @@ abstract public class Terminal implements Serializable, Visitable {
 		}
 
 		protected void turnOff() throws IllegalAccessException {
-			setState(new OffTerminalState());
+			this.setState(new OffTerminalState());
 		}
 		protected void setIdle() throws IllegalAccessException {
-			setState(new IdleTerminalState());
+			this.setState(new IdleTerminalState());
+		}
+		protected void setSilent() throws IllegalAccessException {
+			this.setState(new SilenceTerminalState());
 		}
 		protected void setBusy(boolean isSender) throws IllegalAccessException {
 			if (isSender) {
-				setState(new SenderBusyTerminalState(Terminal.this._state));
+				this.setState(
+						new SenderBusyTerminalState(Terminal.this._state));
 			} else {
-				setState(new BusyTerminalState(Terminal.this._state));
+				this.setState(new BusyTerminalState(Terminal.this._state));
 			}
 		}
-		protected void setSilent() throws IllegalAccessException {
-			setState(new SilenceTerminalState());
-		}
+
+		protected abstract void restoreState() throws IllegalAccessException;
 
 		protected abstract String getStateName();
 
@@ -329,6 +341,11 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected void turnOff() throws IllegalAccessException {
 			throw new IllegalAccessException();
 		}
+
+		@Override
+		protected void restoreState() throws IllegalAccessException {
+			throw new IllegalAccessException();
+		}
 	
 		@Override
 		protected String getStateName() {
@@ -349,7 +366,7 @@ abstract public class Terminal implements Serializable, Visitable {
 
 			Communication comm = Terminal.this._ongoingCom;
 			Terminal.this._ongoingCom = null;
-			this.setState(this._oldState);
+			this._oldState.restoreState();
 			return comm;
 		}
 	}
@@ -388,6 +405,12 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected void setIdle() throws IllegalAccessException {
 			throw new IllegalAccessException();
 		}
+
+		@Override
+		protected void restoreState() {
+			this.setState(this);
+			Terminal.this.pushNotifications(new BusyToIdle(Terminal.this._key));
+		}
 	
 		@Override
 		protected String getStateName() {
@@ -415,12 +438,28 @@ abstract public class Terminal implements Serializable, Visitable {
 		private static final long serialVersionUID = 202210161925L;
 	
 		@Override
+		protected void setIdle() throws IllegalAccessException {
+			super.setIdle();
+			Terminal.this.pushNotifications(new OffToIdle(Terminal.this._key));
+		}
+		@Override
 		protected void turnOff() throws IllegalAccessException {
 			throw new IllegalAccessException();
+		}
+		@Override
+		protected void setSilent() throws IllegalAccessException {
+			super.setSilent();
+			Terminal.this.pushNotifications(
+					new OffToSilent(Terminal.this._key));
 		}
 
 		@Override
 		protected void setBusy(boolean isSender) throws IllegalAccessException {
+			throw new IllegalAccessException();
+		}
+
+		@Override
+		protected void restoreState() throws IllegalAccessException {
 			throw new IllegalAccessException();
 		}
 	
@@ -450,10 +489,21 @@ abstract public class Terminal implements Serializable, Visitable {
 	
 		@Serial
 		private static final long serialVersionUID = 202210161925L;
-	
+
+		@Override
+		protected void setIdle() throws IllegalAccessException {
+			super.setIdle();
+			Terminal.this.pushNotifications(
+					new SilentToIdle(Terminal.this._key));
+		}
 		@Override
 		protected void setSilent() throws IllegalAccessException {
 			throw new IllegalAccessException();
+		}
+
+		@Override
+		protected void restoreState() {
+			this.setState(this);
 		}
 	
 		@Override
