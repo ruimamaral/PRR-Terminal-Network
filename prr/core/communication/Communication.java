@@ -30,8 +30,7 @@ public abstract class Communication implements Visitable, Serializable {
 
 	private boolean _friendly;
 
-	protected Communication(int key,
-			Terminal sender, Terminal receiver) {
+	protected Communication(int key, Terminal sender, Terminal receiver) {
 		this._key = key;
 		this._receiver = receiver;
 		this._sender = sender;

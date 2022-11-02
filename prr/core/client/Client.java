@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import prr.core.notification.DefaultDeliveryMethod;
+import prr.core.communication.Communication;
+import prr.core.notification.DefaultMethodHolder;
 import prr.core.notification.Notification;
 import prr.core.notification.NotificationDeliveryMethod;
 import prr.core.pricetable.DefaultPricing;
@@ -19,7 +20,7 @@ import prr.util.Visitor;
 public class Client implements Serializable, Visitable {
 
 	@Serial
-	private static final long serialVersionUID = 202210161323L;
+	private static final long serialVersionUID = 202211022106L;
 
 	private String _key;
 
@@ -41,6 +42,10 @@ public class Client implements Serializable, Visitable {
 
 	private List<Notification> _notifications = new ArrayList<Notification>();
 
+	private int _consecutiveVideoCommunications;
+
+	private int _consecutiveTextCommunications;
+
 	public Client(String key, String name, int taxId) {
 		this._key = key;
 		this._name = name;
@@ -49,11 +54,20 @@ public class Client implements Serializable, Visitable {
 		this._status = new NormalClientStatus(); // default
 		this._debt = 0;
 		this._totalPaid = 0;
-		this._deliveryMethod = DefaultDeliveryMethod.getDefaultMethod();
+		this._deliveryMethod = DefaultMethodHolder.getDefaultMethod();
 	}
 
+	@Override
 	public <T> T accept(Visitor<T> visitor) {
 		return visitor.visit(this);
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof Client) {
+			return this.getKey().equalsIgnoreCase(((Client) other).getKey());
+		}
+		return false;
 	}
 
 	public String getKey() {
@@ -84,6 +98,14 @@ public class Client implements Serializable, Visitable {
 		return this._status.getPriceTable();
 	}
 
+	private double calculateBalance() {
+		return this._totalPaid - this._debt;
+	}
+
+	public void pushNotification(Notification notification) {
+		this._deliveryMethod.pushNotification(this, notification);
+	}
+
 	public void addTerminal(Terminal terminal) {
 		this._terminals.put(terminal.getKey(), terminal);
 	}
@@ -96,35 +118,61 @@ public class Client implements Serializable, Visitable {
 		this._debt += amount;
 	}
 
-	public void pushNotification(Notification notification) {
-		this._deliveryMethod.pushNotification(this, notification);
+	public void pay(Communication communication) throws IllegalAccessException {
+		if (this.equals(communication.getClient())) {
+			throw new IllegalAccessException();
+		}
+		double amount = communication.getCost();
+		this.addDebt(amount);
+		this._totalPaid += amount;
+		this._status.updateStatus();
+	}
+
+	public void startVideoCommunication() {
+		this._consecutiveVideoCommunications += 1;
+		this._consecutiveTextCommunications = 0;
+		this._status.updateStatus();
+	}
+
+	public void startVoiceCommunication() {
+		this._consecutiveVideoCommunications = 0;
+		this._consecutiveTextCommunications = 0;
+	}
+
+	public void sendTextCommunication() {
+		this._consecutiveVideoCommunications = 0;
+		this._consecutiveTextCommunications += 1;
+		this._status.updateStatus();
 	}
 
 	public abstract class ClientStatus implements Serializable {
 
 		@Serial
-		private static final long serialVersionUID = 202210161323L;
+		private static final long serialVersionUID = 202211022106L;
 
 		private PriceTable _priceTable;
+
+		protected void setStatus(ClientStatus newStatus) {
+			Client.this._status = newStatus;
+		}
 
 		protected ClientStatus(PriceTable priceTable) {
 			this._priceTable = priceTable;
 		}
 
-		public abstract String getName();
+		protected abstract String getName();
 
-		public PriceTable getPriceTable() {
+		protected PriceTable getPriceTable() {
 			return this._priceTable;
 		}
 
-		// FIXME define changeStatus
-		public void changeStatus() {} 
+		protected abstract void updateStatus();
 	}
 
 	public class NormalClientStatus extends Client.ClientStatus {
 
 		@Serial
-		private static final long serialVersionUID = 202210161323L;
+		private static final long serialVersionUID = 202211022106L;
 
 		public NormalClientStatus() {
 			super(DefaultPricing.getNormal());
@@ -133,6 +181,57 @@ public class Client implements Serializable, Visitable {
 		public String getName() {
 			return "NORMAL";
 		}
+
+		@Override
+		protected void updateStatus() {
+			if (Client.this.calculateBalance() > 500) {
+				this.setStatus(new GoldClientStatus());
+			}
+		}
+	}
+	public class GoldClientStatus extends Client.ClientStatus {
+
+		@Serial
+		private static final long serialVersionUID = 202211022106L;
+
+		public GoldClientStatus() {
+			super(DefaultPricing.getNormal());
+		}
+	
+		public String getName() {
+			return "GOLD";
+		}
+
+		@Override
+		protected void updateStatus() {
+			if (Client.this.calculateBalance() < 0) {
+				this.setStatus(new NormalClientStatus());
+			} else if (Client.this._consecutiveVideoCommunications >= 5) {
+				this.setStatus(new PlatinumClientStatus());
+			}
+		}
 	}
 
+	public class PlatinumClientStatus extends Client.ClientStatus {
+
+		@Serial
+		private static final long serialVersionUID = 202211022106L;
+
+		public PlatinumClientStatus() {
+			super(DefaultPricing.getPlatinum());
+		}
+	
+		public String getName() {
+			return "PLATINUM";
+		}
+
+		@Override
+		protected void updateStatus() {
+			if (Client.this.calculateBalance() < 0) {
+				this.setStatus(new NormalClientStatus());
+			} else if (Client.this._consecutiveTextCommunications >= 2) {
+				this.setStatus(new GoldClientStatus());
+			}
+		}
+	}
 }

@@ -95,21 +95,20 @@ public class Network implements Serializable {
 	}
 
 	public void registerInteractiveCommunication(String type, Terminal sender,
-			String receiverKey) throws  TargetBusyException,
-			IllegalArgumentException, TargetSilentException,
-			UnknownTerminalKeyException, TargetOffException, 
+			String receiverKey) throws UnknownTerminalKeyException,
+			TargetBusyException, TargetSilentException, TargetOffException,
 			ActionNotSupportedAtDestination, ActionNotSupportedAtOrigin {
 
 		Terminal receiver = this.getTerminal(receiverKey);
 		int key = this._communications.size() + 1;
 		if (receiver.equals(sender)) {
-			throw new IllegalArgumentException();
+			throw new TargetOffException();
 		}
 
 		try {
 			switch (type) {
 				case "VIDEO" -> sender.startVideoCommunication( 
-						new VideoCommunication(key, sender, receiver));
+						new VideoCommunication(key, sender, receiver)); // mudar para start(key, sender, receiver) n e preciso mudar o receive no terminal pq crio a comm no start e mando para o receive
 				case "VOICE" -> sender.startVoiceCommunication(
 						new VoiceCommunication(key, sender, receiver));
 				default -> throw new IllegalArgumentException();

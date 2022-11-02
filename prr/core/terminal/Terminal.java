@@ -74,7 +74,7 @@ abstract public class Terminal implements Serializable, Visitable {
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof Terminal) {
-			return this.getKey().equalsIgnoreCase(((Terminal) other).getKey());
+			return this.getKey().equals(((Terminal) other).getKey());
 		}
 		return false;
 	}
@@ -204,6 +204,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		if (this.canStartCommunication()) {
 			comm.getReceiver().receiveVoiceCommunication(comm);
 			this.startInteractiveCommunication(comm);
+			comm.getClient().startVoiceCommunication();
 		} else {
 			throw new IllegalAccessException();
 		}
@@ -239,6 +240,7 @@ abstract public class Terminal implements Serializable, Visitable {
 			comm.getReceiver().receiveTextCommunication(comm);
 			this.addCommunication(comm);
 			comm.setCost(this.getPriceTable());
+			comm.getClient().sendTextCommunication();
 		} else {
 			throw new IllegalAccessException();
 		}

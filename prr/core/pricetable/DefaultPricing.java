@@ -8,28 +8,29 @@ public class DefaultPricing implements Serializable {
 	@Serial
 	private static final long serialVersionUID = 202210311305L;
 
-	private static PriceTable normal;
-	private static PriceTable gold;
-	private static PriceTable platinum;
+	private static PriceTable _normal;
+	private static PriceTable _gold;
+	private static PriceTable _platinum;
 
+	// lazy initialization
 	public static PriceTable getNormal() {
-		if (normal == null) {
-			normal = new DefaultPriceTable(30, 20, 10, 16, x -> 2 * x); 
+		if (_normal == null) {
+			_normal = new DefaultPriceTable(30, 20, 10, 16, x -> 2 * x); 
 		}
-		return normal;
+		return _normal;
 	}
 
 	public static PriceTable getGold() {
-		if (gold == null) {
-			gold = new DefaultPriceTable(20, 10, 10, 10, x -> 2 * x); 
+		if (_gold == null) {
+			_gold = new DefaultPriceTable(20, 10, 10, 10, x -> 2 * x); 
 		}
-		return gold;
+		return _gold;
 	}
 
 	public static PriceTable getPlatinum() {
-		if (platinum == null) {
-			platinum = new DefaultPriceTable(10, 10, 0, 4, x -> (double) 4); 
+		if (_platinum == null) {
+			_platinum = new DefaultPriceTable(10, 10, 0, 4, x -> (double) 4); 
 		}
-		return platinum;
+		return _platinum;
 	}
 }
