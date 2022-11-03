@@ -2,6 +2,7 @@ package prr.core.terminal;
 
 import prr.core.client.Client;
 import prr.core.communication.Communication;
+import prr.core.communication.TextCommunication;
 import prr.core.communication.VideoCommunication;
 import prr.core.communication.VoiceCommunication;
 import prr.core.exception.ActionNotSupportedAtDestination;
@@ -51,8 +52,6 @@ abstract public class Terminal implements Serializable, Visitable {
 	
 	private Communication _ongoingCom;
 
-	private boolean _isActive;
-
 	private double _totalPaid;
 
 	private double _debt;
@@ -63,7 +62,6 @@ abstract public class Terminal implements Serializable, Visitable {
 		this._client = client;
 		this._key = key;
 		this._state = new IdleTerminalState();
-		this._isActive = false;
 	}
 
 	@Override
@@ -108,6 +106,9 @@ abstract public class Terminal implements Serializable, Visitable {
 	public PriceTable getPriceTable() {
 		return this._client.getPriceTable();
 	}
+	public Communication getOngoing() {
+		return this._ongoingCom;
+	}
 
 	public void addDebt(double amount) {
 		this._debt += amount;
@@ -119,7 +120,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		this._client.payAmount(amount);
 	}
 
-	public void payCommunication(int commKey) {
+	public void payCommunication(int commKey) throws IllegalAccessException {
 		if (!this._sentComms.containsKey(commKey)) {
 			throw new IllegalArgumentException();
 		}
@@ -129,7 +130,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		this.addDebt(-amount);
 	}
 
-	public void turnOff() throws IllegalAccessException { // TODO catch exceptions
+	public void turnOff() throws IllegalAccessException {
 		this._state.turnOff();
 	}
 	public void setIdle() throws IllegalAccessException {
@@ -158,6 +159,13 @@ abstract public class Terminal implements Serializable, Visitable {
 			throw new IllegalArgumentException();
 		}
 		this._friends.put(friendKey, friend);
+	}
+
+	public void removeFriend(String key) throws IllegalArgumentException {
+		if (!this.isFriend(key)) {
+			throw new IllegalArgumentException();
+		}
+		this._friends.remove(key);
 	}
 
 	public boolean isFriend(String key) {
@@ -195,14 +203,15 @@ abstract public class Terminal implements Serializable, Visitable {
 	/**
 	 * Checks if this terminal can start a new communication.
 	 *
-	 * @return true if this terminal is neither off neither busy, false otherwise.
+	 * @return true if this terminal is neither off neither busy,
+	 * 		false otherwise.
 	 **/
 	public boolean canStartCommunication() {
 		return this._state.canStartCommunication();
 	}
 
-	public abstract void startVideoCommunication(
-			VideoCommunication comm) throws IllegalAccessException,
+	public abstract Communication startVideoCommunication(int key,
+			Terminal sender, Terminal receiver) throws IllegalAccessException,
 			TargetOffException, TargetBusyException, TargetSilentException,
 			ActionNotSupportedAtDestination, ActionNotSupportedAtOrigin;
 
@@ -211,11 +220,13 @@ abstract public class Terminal implements Serializable, Visitable {
 			TargetOffException, TargetBusyException, TargetSilentException,
 			ActionNotSupportedAtDestination, ActionNotSupportedAtOrigin;
 
-	public void startVoiceCommunication(
-			VoiceCommunication comm) throws IllegalAccessException,
+	public Communication startVoiceCommunication(
+			int key, Terminal sender, Terminal receiver)
+			throws IllegalAccessException,
 			TargetOffException, TargetBusyException, TargetSilentException {
 
 		// check not needed but in place in case method is misused	
+		VoiceCommunication comm = new VoiceCommunication(key, sender, receiver);
 		if (this.canStartCommunication()) {
 			comm.getReceiver().receiveVoiceCommunication(comm);
 			this.startInteractiveCommunication(comm);
@@ -223,6 +234,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		} else {
 			throw new IllegalAccessException();
 		}
+		return comm;
 	}
 		
 	public void receiveVoiceCommunication(
@@ -247,8 +259,12 @@ abstract public class Terminal implements Serializable, Visitable {
 		this._state.receiveInteractiveCommunication(comm);
 	}
 
-	public void sendTextCommunication(Communication comm)
+	public Communication sendTextCommunication(
+			int key, Terminal sender, Terminal receiver, String message)
 			throws IllegalAccessException, TargetOffException {
+
+		TextCommunication comm =
+				new TextCommunication(key, sender, receiver, message);
 
 		// check not needed but in place in case method is misused	
 		if (this.canStartCommunication()) {
@@ -259,6 +275,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		} else {
 			throw new IllegalAccessException();
 		}
+		return comm;
 	}
 
 	protected void receiveTextCommunication(
@@ -317,8 +334,8 @@ abstract public class Terminal implements Serializable, Visitable {
 		protected void receiveTextCommunication(
 				Communication comm) throws TargetOffException {}
 
-		protected abstract void receiveInteractiveCommunication(Communication comm)
-			throws TargetOffException, TargetBusyException,
+		protected abstract void receiveInteractiveCommunication(
+			Communication comm) throws TargetOffException, TargetBusyException,
 			TargetSilentException, IllegalAccessException;
 
 		protected Communication endCurrentCommunication()

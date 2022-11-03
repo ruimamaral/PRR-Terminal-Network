@@ -7,8 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import prr.core.communication.Communication;
-import prr.core.notification.DefaultMethodHolder;
+import prr.core.notification.DefaultNotificationDeliveryMethod;
 import prr.core.notification.Notification;
 import prr.core.notification.NotificationDeliveryMethod;
 import prr.core.pricetable.DefaultPricing;
@@ -50,7 +49,8 @@ public class Client implements Serializable, Visitable {
 		this._status = new NormalClientStatus(); // default
 		this._debt = 0;
 		this._totalPaid = 0;
-		this._deliveryMethod = DefaultMethodHolder.getDefaultMethod();
+		this._deliveryMethod =
+				DefaultNotificationDeliveryMethod.getDefaultMethod();
 	}
 
 	@Override
@@ -129,6 +129,12 @@ public class Client implements Serializable, Visitable {
 	public void sendTextCommunication() {
 		this._status.sendTextCommunication();
 	}
+
+	/*
+	 *
+	 *  Inner Classes ------------------------------------------------
+	 * 
+	 */
 
 	public abstract class ClientStatus implements Serializable {
 

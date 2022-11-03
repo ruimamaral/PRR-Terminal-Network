@@ -26,8 +26,8 @@ public class BasicTerminal extends Terminal {
 	//TODO add exception overrides to fancyterminal only functionalities
 
 	@Override
-	public void startVideoCommunication(
-			VideoCommunication comm) throws ActionNotSupportedAtOrigin {
+	public Communication startVideoCommunication(int key,Terminal sender,
+			Terminal receiver) throws ActionNotSupportedAtOrigin {
 
 		throw new ActionNotSupportedAtOrigin();
 	}

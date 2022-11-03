@@ -30,11 +30,13 @@ public class FancyTerminal extends Terminal {
 	}
 
 	@Override
-	public void startVideoCommunication(
-			VideoCommunication comm) throws IllegalAccessException,
+	public Communication startVideoCommunication(int key, Terminal sender,
+			Terminal receiver) throws IllegalAccessException,
 			TargetOffException, TargetBusyException, TargetSilentException,
 			ActionNotSupportedAtDestination, ActionNotSupportedAtOrigin {
 		
+		VideoCommunication comm = new VideoCommunication(key, sender, receiver);
+
 		// check not needed but in place in case method is misused	
 		if (this.canStartCommunication()) {
 			comm.getReceiver().receiveVideoCommunication(comm);
@@ -43,6 +45,7 @@ public class FancyTerminal extends Terminal {
 		} else {
 			throw new IllegalAccessException();
 		}
+		return comm;
 	}
 
 	@Override

@@ -104,15 +104,16 @@ public class Network implements Serializable {
 		if (receiver.equals(sender)) {
 			throw new TargetOffException();
 		}
-
+		Communication newComm;
 		try {
 			switch (type) {
-				case "VIDEO" -> sender.startVideoCommunication( 
-						new VideoCommunication(key, sender, receiver)); // mudar para start(key, sender, receiver) n e preciso mudar o receive no terminal pq crio a comm no start e mando para o receive
-				case "VOICE" -> sender.startVoiceCommunication(
-						new VoiceCommunication(key, sender, receiver));
+				case "VIDEO" -> newComm = 
+						sender.startVideoCommunication(key, sender, receiver);
+				case "VOICE" -> newComm =
+						sender.startVoiceCommunication(key, sender, receiver);
 				default -> throw new IllegalArgumentException();
 			}
+			this.addCommunication(newComm);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();	// Unexpected behaviour
 		}
@@ -123,15 +124,14 @@ public class Network implements Serializable {
 			throws TargetOffException, UnknownTerminalKeyException {
 		
 		Terminal receiver = this.getTerminal(receiverKey);
-		Communication newComm = new TextCommunication(
-				this._communications.size() + 1, sender, receiver, message);
-
+		Communication newComm;
 		try {
-			sender.sendTextCommunication(newComm);
+			newComm = sender.sendTextCommunication(
+					this._communications.size() + 1, sender, receiver, message);
+			this.addCommunication(newComm);
 		} catch (IllegalAccessException e) {
 			e.printStackTrace();	// Unexpected behaviour
 		}
-		this.addCommunication(newComm);
 	}
 
 	public void endCurrentCommunication(

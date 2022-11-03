@@ -81,6 +81,6 @@ public abstract class Communication implements Visitable, Serializable {
 	protected abstract double calculateCost(PriceTable priceTable);
 
 	public boolean isFriendly() {
-		return this._friendly; // TODO mudar isto para sender.isFriend(receiver.getKey());
+		return this._friendly;
 	}
 }
