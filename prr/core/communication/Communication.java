@@ -59,6 +59,9 @@ public abstract class Communication implements Visitable, Serializable {
 	public Terminal getSender() {
 		return this._sender;
 	}
+	public double getCost() {
+		return this._cost;
+	}
 
 	public void setCost(PriceTable priceTable) {
 		double cost = this.calculateCost(priceTable);
