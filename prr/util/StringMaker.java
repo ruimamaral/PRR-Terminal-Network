@@ -58,6 +58,10 @@ public class StringMaker implements Visitor<Void> {
 		return null;
 	}
 
+	public int length() {
+		return this._text.length();
+	}
+
 	@Override
 	public String toString() {
 		// Delete trailing newline character before returning

@@ -1,8 +1,10 @@
 package prr.app.lookup;
 
+import java.util.Comparator;
+
 import prr.core.Network;
+import prr.core.terminal.Terminal;
 import prr.util.StringMaker;
-import prr.util.Visitor;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
 
@@ -18,17 +20,15 @@ class DoShowUnusedTerminals extends Command<Network> {
 	@Override
 	protected final void execute() throws CommandException {
 
-		final Visitor<Void> stringMaker = new StringMaker();
+		final StringMaker stringMaker = new StringMaker();
 
-		if (_receiver.getClientCount() != 0) {
-			_receiver.visitAll(stringMaker,
-					_receiver.getAllTerminals(),
-					term -> (!term.hasActivity()));
-		}
-		String text = stringMaker.toString();
+		_receiver.visitAll(stringMaker,
+				_receiver.getAllTerminals(),
+				Terminal::isInactive,
+				Comparator.comparing(Terminal::getKey));
 
-		if (text.length() != 0) {
-			_display.popup(text);
+		if (stringMaker.length() != 0) {
+			_display.popup(stringMaker);
 		}
 	}
 }

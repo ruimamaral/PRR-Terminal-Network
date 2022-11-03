@@ -16,6 +16,7 @@ public class TextCommunication extends Communication {
 			Terminal sender, Terminal receiver, String message) {
 		super(key, sender, receiver);
 		this._message = message;
+		this.setUnits(message.length());
 	}
 
 	public double calculateCost(PriceTable priceTable) {

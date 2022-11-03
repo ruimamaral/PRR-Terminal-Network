@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.function.Predicate;
@@ -22,9 +23,6 @@ import prr.core.exception.ActionNotSupportedAtOrigin;
 import prr.core.exception.DuplicateClientKeyException;
 import prr.core.client.Client;
 import prr.core.communication.Communication;
-import prr.core.communication.TextCommunication;
-import prr.core.communication.VideoCommunication;
-import prr.core.communication.VoiceCommunication;
 import prr.core.exception.UnknownClientKeyException;
 import prr.core.exception.UnknownTerminalKeyException;
 
@@ -190,6 +188,11 @@ public class Network implements Serializable {
 		return Collections.unmodifiableCollection(this._terminals.values());
 	}
 
+	public Collection<Communication> getAllCommunications() {
+		return Collections
+				.unmodifiableCollection(this._communications.values());
+	}
+
 	/**
 	 * Returns the amount of clients on the network
 	 * 
@@ -272,18 +275,16 @@ public class Network implements Serializable {
 	 * @param <E> element type
 	 * @param visitor the visitor
 	 * @param col collection of <E> elements
-	 * @param valid predicate for choosing elements
+	 * @param valid predicate for filtering elements
+	 * @param order comparator for sorting elements
 	 */
 	public <T, E extends Visitable> void visitAll(
-			Visitor<T> visitor, Collection<E> col, Predicate<E> valid) {
+			Visitor<T> visitor, Collection<E> col, Predicate<E> valid, Comparator<E> order) {
 
-		for (E element : col) {
-			if (valid.test(element)) {
-				element.accept(visitor);
-			}
-		}
+		col.stream().filter(valid)
+				.sorted(order).forEach(e -> e.accept(visitor));
+
 	}
-
 }
 
 

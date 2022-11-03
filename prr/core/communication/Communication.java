@@ -63,11 +63,15 @@ public abstract class Communication implements Visitable, Serializable {
 		return this._cost;
 	}
 
-	public void setCost(PriceTable priceTable) {
+	public double setCost(PriceTable priceTable) {
 		double cost = this.calculateCost(priceTable);
 		this._cost = cost;
-		this._sender.addDebt(cost);
 		this._isOngoing = false;
+		return cost;
+	}
+
+	public void setUnits(int units) {
+		this._units = units;
 	}
 
 	public double pay() throws IllegalAccessException {

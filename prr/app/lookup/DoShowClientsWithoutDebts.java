@@ -1,9 +1,12 @@
 package prr.app.lookup;
 
+import java.util.Comparator;
+
 import prr.core.Network;
+import prr.core.client.Client;
+import prr.util.StringMaker;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME more imports if needed
 
 /**
  * Show clients with positive balance.
@@ -16,6 +19,15 @@ class DoShowClientsWithoutDebts extends Command<Network> {
 
 	@Override
 	protected final void execute() throws CommandException {
-		//FIXME implement command
+		final StringMaker stringMaker = new StringMaker();
+
+		_receiver.visitAll(stringMaker,
+				_receiver.getAllClients(),
+				t -> t.getDebt() == 0,
+				Comparator.comparing(Client::getKey));
+
+		if (stringMaker.length() != 0) {
+			_display.popup(stringMaker);
+		}
 	}
 }

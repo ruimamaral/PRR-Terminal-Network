@@ -84,11 +84,11 @@ public class Client implements Serializable, Visitable {
 	public int getTerminalCount() {
 		return this._terminals.size();
 	}
-	public int getTotalPaid() {
-		return (int) Math.round(this._totalPaid);
+	public double getTotalPaid() {
+		return this._totalPaid;
 	}
-	public int getDebt() {
-		return (int) Math.round(this._debt);
+	public double getDebt() {
+		return this._debt;
 	}
 	public PriceTable getPriceTable() {
 		return this._status.getPriceTable();

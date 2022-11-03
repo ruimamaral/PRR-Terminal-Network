@@ -91,7 +91,7 @@ abstract public class Terminal implements Serializable, Visitable {
 	public Client getClient() {
 		return this._client;
 	}
-	public boolean hasActivity() {
+	public boolean isInactive() {
 		return this._sentComms.size() == 0;
 	}
 	public String getClientKey() {
@@ -108,6 +108,10 @@ abstract public class Terminal implements Serializable, Visitable {
 	}
 	public Communication getOngoing() {
 		return this._ongoingCom;
+	}
+
+	public double calculateBalance() {
+		return this._totalPaid - this._debt;
 	}
 
 	public void addDebt(double amount) {
@@ -270,7 +274,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		if (this.canStartCommunication()) {
 			comm.getReceiver().receiveTextCommunication(comm);
 			this.addCommunication(comm);
-			comm.setCost(this.getPriceTable());
+			this.addDebt(comm.setCost(this.getPriceTable()));
 			comm.getClient().sendTextCommunication();
 		} else {
 			throw new IllegalAccessException();
@@ -425,7 +429,7 @@ abstract public class Terminal implements Serializable, Visitable {
 
 			Communication comm = super.endCurrentCommunication();
 			comm.getReceiver().endCurrentCommunication();
-			comm.setCost(Terminal.this.getPriceTable());
+			Terminal.this.addDebt(comm.setCost(Terminal.this.getPriceTable()));
 			return comm;
 		}
 	}
