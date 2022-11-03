@@ -114,6 +114,10 @@ public class Client implements Serializable, Visitable {
 		this._debt += amount;
 	}
 
+	public void payAmount(double amount) {
+		this._totalPaid += amount;
+	}
+
 	public void startVideoCommunication() {
 		this._status.startVideoCommunication();
 	}
@@ -124,16 +128,6 @@ public class Client implements Serializable, Visitable {
 
 	public void sendTextCommunication() {
 		this._status.sendTextCommunication();
-	}
-
-	public void pay(Communication communication) throws IllegalAccessException {
-		if (this.equals(communication.getClient())) {
-			throw new IllegalAccessException();
-		}
-		double amount = communication.getCost();
-		this._debt -= amount;
-		this._totalPaid += amount;
-		this._status.updateStatus();
 	}
 
 	public abstract class ClientStatus implements Serializable {

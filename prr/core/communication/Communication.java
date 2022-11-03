@@ -50,9 +50,6 @@ public abstract class Communication implements Visitable, Serializable {
 	public int getUnits() {
 		return this._units;
 	}
-	public double getCost() {
-		return this._cost;
-	}
 	public Client getClient() {
 		return this._sender.getClient();
 	}
@@ -68,6 +65,14 @@ public abstract class Communication implements Visitable, Serializable {
 		this._cost = cost;
 		this._sender.addDebt(cost);
 		this._isOngoing = false;
+	}
+
+	public double pay() throws IllegalAccessException {
+		if (this._isOngoing || this._isPaid) {
+			throw new IllegalAccessException();
+		}
+		this._isPaid = true;
+		return this._cost;
 	}
 
 	protected abstract double calculateCost(PriceTable priceTable);

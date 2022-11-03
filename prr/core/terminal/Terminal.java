@@ -114,6 +114,21 @@ abstract public class Terminal implements Serializable, Visitable {
 		this._client.addDebt(amount);
 	}
 
+	public void payAmount(double amount) {
+		this._totalPaid += amount;
+		this._client.payAmount(amount);
+	}
+
+	public void payCommunication(int commKey) {
+		if (!this._sentComms.containsKey(commKey)) {
+			throw new IllegalArgumentException();
+		}
+		Communication comm = this._sentComms.get(commKey);
+		double amount = comm.pay();
+		this.payAmount(amount);
+		this.addDebt(-amount);
+	}
+
 	public void turnOff() throws IllegalAccessException { // TODO catch exceptions
 		this._state.turnOff();
 	}
