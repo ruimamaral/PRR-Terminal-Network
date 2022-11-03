@@ -42,10 +42,6 @@ public class Client implements Serializable, Visitable {
 
 	private List<Notification> _notifications = new ArrayList<Notification>();
 
-	private int _consecutiveVideoCommunications;
-
-	private int _consecutiveTextCommunications;
-
 	public Client(String key, String name, int taxId) {
 		this._key = key;
 		this._name = name;
@@ -118,30 +114,25 @@ public class Client implements Serializable, Visitable {
 		this._debt += amount;
 	}
 
+	public void startVideoCommunication() {
+		this._status.startVideoCommunication();
+	}
+
+	public void startVoiceCommunication() {
+		this._status.startVoiceCommunication();
+	}
+
+	public void sendTextCommunication() {
+		this._status.sendTextCommunication();
+	}
+
 	public void pay(Communication communication) throws IllegalAccessException {
 		if (this.equals(communication.getClient())) {
 			throw new IllegalAccessException();
 		}
 		double amount = communication.getCost();
-		this.addDebt(amount);
+		this._debt -= amount;
 		this._totalPaid += amount;
-		this._status.updateStatus();
-	}
-
-	public void startVideoCommunication() {
-		this._consecutiveVideoCommunications += 1;
-		this._consecutiveTextCommunications = 0;
-		this._status.updateStatus();
-	}
-
-	public void startVoiceCommunication() {
-		this._consecutiveVideoCommunications = 0;
-		this._consecutiveTextCommunications = 0;
-	}
-
-	public void sendTextCommunication() {
-		this._consecutiveVideoCommunications = 0;
-		this._consecutiveTextCommunications += 1;
 		this._status.updateStatus();
 	}
 
@@ -151,6 +142,10 @@ public class Client implements Serializable, Visitable {
 		private static final long serialVersionUID = 202211022106L;
 
 		private PriceTable _priceTable;
+
+		private int _consecutiveVideoCommunications;
+
+		private int _consecutiveTextCommunications;
 
 		protected void setStatus(ClientStatus newStatus) {
 			Client.this._status = newStatus;
@@ -167,6 +162,23 @@ public class Client implements Serializable, Visitable {
 		}
 
 		protected abstract void updateStatus();
+
+		public void startVideoCommunication() {
+			this._consecutiveVideoCommunications += 1;
+			this._consecutiveTextCommunications = 0;
+			this.updateStatus();
+		}
+
+		public void startVoiceCommunication() {
+			this._consecutiveVideoCommunications = 0;
+			this._consecutiveTextCommunications = 0;
+		}
+
+		public void sendTextCommunication() {
+			this._consecutiveVideoCommunications = 0;
+			this._consecutiveTextCommunications += 1;
+			this.updateStatus();
+		}
 	}
 
 	public class NormalClientStatus extends Client.ClientStatus {

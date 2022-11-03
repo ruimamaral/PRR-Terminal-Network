@@ -3,7 +3,12 @@ package prr.core.communication;
 import prr.core.pricetable.PriceTable;
 import prr.core.terminal.Terminal;
 
+import java.io.Serial;
+
 public class TextCommunication extends Communication {
+
+	@Serial
+	private static final long serialVersionUID = 202210311305L;
 
 	private String _message;
 
