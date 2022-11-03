@@ -157,6 +157,14 @@ public class Client implements Serializable, Visitable {
 
 		protected abstract String getName();
 
+		protected int getConsecutiveVideoCommunications() {
+			return this._consecutiveVideoCommunications;
+		}
+
+		protected int getConsecutiveTextCommunications() {
+			return this._consecutiveTextCommunications;
+		}
+
 		protected PriceTable getPriceTable() {
 			return this._priceTable;
 		}
@@ -218,7 +226,7 @@ public class Client implements Serializable, Visitable {
 		protected void updateStatus() {
 			if (Client.this.calculateBalance() < 0) {
 				this.setStatus(new NormalClientStatus());
-			} else if (Client.this._consecutiveVideoCommunications >= 5) {
+			} else if (this.getConsecutiveVideoCommunications() >= 5) {
 				this.setStatus(new PlatinumClientStatus());
 			}
 		}
@@ -241,7 +249,7 @@ public class Client implements Serializable, Visitable {
 		protected void updateStatus() {
 			if (Client.this.calculateBalance() < 0) {
 				this.setStatus(new NormalClientStatus());
-			} else if (Client.this._consecutiveTextCommunications >= 2) {
+			} else if (this.getConsecutiveTextCommunications() >= 2) {
 				this.setStatus(new GoldClientStatus());
 			}
 		}
