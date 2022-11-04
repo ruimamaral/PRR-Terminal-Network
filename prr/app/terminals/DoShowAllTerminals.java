@@ -7,7 +7,6 @@ import prr.core.terminal.Terminal;
 import prr.util.StringMaker;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add more imports if needed
 
 /**
  * Show all terminals.

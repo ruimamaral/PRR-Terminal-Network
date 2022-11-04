@@ -205,6 +205,16 @@ public class Network implements Serializable {
 		return this._terminals.size();
 	}
 
+	public double getTotalPaid() {
+		return this.getAllClients().stream()
+				.map(Client::getTotalPaid).reduce(0D, Double::sum);
+	}
+
+	public double getDebt() {
+		return this.getAllClients().stream()
+				.map(Client::getDebt).reduce(0D, Double::sum);
+	}
+
 	/**
 	 * Adds given terminal to the terminal map.
 	 * 
