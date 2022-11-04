@@ -127,7 +127,7 @@ abstract public class Terminal implements Serializable, Visitable {
 
 	public void payCommunication(int commKey) throws IllegalAccessException {
 		if (!this._sentComms.containsKey(commKey)) {
-			throw new IllegalArgumentException();
+			throw new IllegalAccessException();
 		}
 		Communication comm = this._sentComms.get(commKey);
 		comm.pay();
