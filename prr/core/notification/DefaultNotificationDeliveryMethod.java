@@ -1,9 +1,15 @@
 package prr.core.notification;
 
+import java.io.Serial;
+import java.io.Serializable;
+
 import prr.core.client.Client;
 
 public class DefaultNotificationDeliveryMethod
-		implements NotificationDeliveryMethod {
+		implements NotificationDeliveryMethod, Serializable{
+
+	@Serial
+	private static final long serialVersionUID = 202211042106L;
 
 	private DefaultNotificationDeliveryMethod() {}
 
