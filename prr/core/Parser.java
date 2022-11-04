@@ -75,7 +75,7 @@ public class Parser {
 			Terminal newTerm = this._network.registerTerminal(
 				components[0], components[1], components[2]);
 			switch(components[3]) {
-				case "ON" -> newTerm.setIdle();
+				case "ON" -> {} // do nothing
 				case "OFF" -> newTerm.turnOff();
 				case "SILENCE" -> newTerm.setSilent();
 				default -> throw new IllegalArgumentException();
