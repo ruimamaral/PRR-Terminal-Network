@@ -132,12 +132,6 @@ public class Network implements Serializable {
 		}
 	}
 
-	public void endCurrentCommunication(
-			Terminal sender) throws IllegalAccessException {
-
-		sender.endCurrentCommunication();
-	}
-
 	/**
 	 * Fetches client that corresponds to given client key.
 	 * 
