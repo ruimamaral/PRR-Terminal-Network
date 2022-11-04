@@ -57,13 +57,13 @@ public class DefaultPricing implements PriceTable, Serializable {
 	@Override
 	public double getCost(VoiceCommunication voiceComm) {
 		double cost = this._voiceRate * voiceComm.getUnits();
-		return voiceComm.isFriendly() ? cost : cost / 2;
+		return voiceComm.isFriendly() ? cost / 2 : cost;
 	}
 
 	@Override
 	public double getCost(VideoCommunication videoComm) {
 		double cost = this._videoRate * videoComm.getUnits();
-		return videoComm.isFriendly() ? cost : cost / 2;
+		return videoComm.isFriendly() ? cost / 2 : cost;
 	}
 
 	/*

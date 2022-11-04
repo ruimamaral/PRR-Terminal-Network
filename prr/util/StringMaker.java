@@ -22,7 +22,7 @@ public class StringMaker implements Visitor<Void> {
 		if (client.hasNotificationsEnabled()) {
 			this._text.append("YES");
 		} else {
-			this._text.append("No");
+			this._text.append("NO");
 		}
 		this._text.append("|").append(client.getTerminalCount()).append("|")
 				.append(Math.round(client.getTotalPaid())).append("|")

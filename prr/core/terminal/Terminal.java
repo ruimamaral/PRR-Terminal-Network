@@ -159,7 +159,7 @@ abstract public class Terminal implements Serializable, Visitable {
 	public void addFriend(Terminal friend) {
 		String friendKey = friend.getKey();
 
-		if (!this.isFriend(friendKey)) {
+		if (!this.isFriend(friendKey) && !friend.equals(this)) {
 			this._friends.put(friendKey, friend);
 		}
 	}
