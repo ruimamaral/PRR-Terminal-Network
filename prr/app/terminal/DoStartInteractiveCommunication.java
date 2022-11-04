@@ -41,7 +41,7 @@ class DoStartInteractiveCommunication extends TerminalCommand {
 		} catch (ActionNotSupportedAtDestination e) {
 			_display.popup(Message.unsupportedAtDestination(terminalKey, type));
 		} catch (ActionNotSupportedAtOrigin e) {
-			_display.popup(Message.unsupportedAtOrigin(terminalKey, type));
+			_display.popup(Message.unsupportedAtOrigin(_receiver.getKey(), type));
 		}
 	}
 }

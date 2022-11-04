@@ -100,7 +100,7 @@ public class Network implements Serializable {
 		Terminal receiver = this.getTerminal(receiverKey);
 		int key = this._communications.size() + 1;
 		if (receiver.equals(sender)) {
-			throw new TargetOffException();
+			throw new TargetBusyException();
 		}
 		Communication newComm;
 		try {

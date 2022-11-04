@@ -145,6 +145,7 @@ public class Client implements Serializable, Visitable {
 
 	public void payAmount(double amount) {
 		this._totalPaid += amount;
+		this._status.updateStatus();
 	}
 
 	public void startVideoCommunication() {
