@@ -4,8 +4,6 @@ import prr.core.Network;
 import prr.core.client.Client;
 import prr.util.StringMaker;
 
-import java.util.Comparator;
-
 import prr.app.exception.UnknownClientKeyException;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -34,9 +32,7 @@ class DoShowClient extends Command<Network> {
 		client.accept(stringMaker);
 		_receiver.visitAll(stringMaker,
 				client.getNotifications(),
-				n -> true,
-				// This comparator maintains the original order
-				Comparator.comparing(n -> 0));
+				n -> true);
 
 		client.resetNotifications();
 		_display.popup(stringMaker);

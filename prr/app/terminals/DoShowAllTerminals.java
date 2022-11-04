@@ -1,9 +1,7 @@
 package prr.app.terminals;
 
-import java.util.Comparator;
 
 import prr.core.Network;
-import prr.core.terminal.Terminal;
 import prr.util.StringMaker;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -24,8 +22,7 @@ class DoShowAllTerminals extends Command<Network> {
 
 		_receiver.visitAll(stringMaker,
 				_receiver.getAllTerminals(),
-				terminal -> true,
-				Comparator.comparing(Terminal::getKey));
+				terminal -> true);
 
 		if (stringMaker.length() != 0) {
 			_display.popup(stringMaker);

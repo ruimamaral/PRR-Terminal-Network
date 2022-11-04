@@ -1,7 +1,5 @@
 package prr.app.lookup;
 
-import java.util.Comparator;
-
 import prr.core.Network;
 import prr.core.terminal.Terminal;
 import prr.util.StringMaker;
@@ -24,8 +22,7 @@ class DoShowUnusedTerminals extends Command<Network> {
 
 		_receiver.visitAll(stringMaker,
 				_receiver.getAllTerminals(),
-				Terminal::isInactive,
-				Comparator.comparing(Terminal::getKey));
+				Terminal::isInactive);
 
 		if (stringMaker.length() != 0) {
 			_display.popup(stringMaker);

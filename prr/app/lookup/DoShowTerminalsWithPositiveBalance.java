@@ -1,9 +1,6 @@
 package prr.app.lookup;
 
-import java.util.Comparator;
-
 import prr.core.Network;
-import prr.core.terminal.Terminal;
 import prr.util.StringMaker;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -24,8 +21,7 @@ class DoShowTerminalsWithPositiveBalance extends Command<Network> {
 
 		_receiver.visitAll(stringMaker,
 				_receiver.getAllTerminals(),
-				t -> t.calculateBalance() > 0,
-				Comparator.comparing(Terminal::getKey));
+				t -> t.calculateBalance() > 0);
 
 		if (stringMaker.length() != 0) {
 			_display.popup(stringMaker);

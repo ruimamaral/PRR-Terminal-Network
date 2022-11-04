@@ -165,7 +165,8 @@ public class Network implements Serializable {
 	}
 
 	/**
-	 * Returns a view on a collection of all clients on the network.
+	 * Returns a view on a collection of all clients on the network
+	 * sorted by their key (case-insensitive).
 	 * 
 	 * @return Collection<Client>
 	 */
@@ -174,7 +175,8 @@ public class Network implements Serializable {
 	}
 
 	/**
-	 * Returns a view on a collection of all terminals on the network.
+	 * Returns a view on a collection of all terminals on the network
+	 * sorted by key.
 	 * 
 	 * @return Collection<Terminal>
 	 */
@@ -182,27 +184,15 @@ public class Network implements Serializable {
 		return Collections.unmodifiableCollection(this._terminals.values());
 	}
 
+	/**
+	 * Returns a view on a collection of all communications
+	 * on the network sorted by key.
+	 * 
+	 * @return Collection<Communication>
+	 */
 	public Collection<Communication> getAllCommunications() {
 		return Collections
 				.unmodifiableCollection(this._communications.values());
-	}
-
-	/**
-	 * Returns the amount of clients on the network
-	 * 
-	 * @return int
-	 */
-	public int getClientCount() {
-		return this._clients.size();
-	}
-
-	/**
-	 * Returns the amount of terminals on the network
-	 * 
-	 * @return int
-	 */
-	public int getTerminalCount() {
-		return this._terminals.size();
 	}
 
 	public double getTotalPaid() {
@@ -280,14 +270,31 @@ public class Network implements Serializable {
 	 * @param visitor the visitor
 	 * @param col collection of <E> elements
 	 * @param valid predicate for filtering elements
-	 * @param order comparator for sorting elements
 	 */
 	public <T, E extends Visitable> void visitAll(
-			Visitor<T> visitor, Collection<E> col, Predicate<E> valid, Comparator<E> order) {
+			Visitor<T> visitor, Collection<E> col, Predicate<E> valid) {
+
+		col.stream().filter(valid).forEach(e -> e.accept(visitor));
+	}
+
+	/**
+	 * Visits elements that respect the given predicate from the
+	 * given collection with a given visitor in a certain order
+	 * determined by the comparator.
+	 * 
+	 * @param <T> visitor type
+	 * @param <E> element type
+	 * @param visitor the visitor
+	 * @param col collection of <E> elements
+	 * @param valid predicate for filtering elements
+	 * @param order comparator for sorting elements
+	 */
+	public <T, E extends Visitable> void visitAllSorted(
+			Visitor<T> visitor, Collection<E> col,
+			Predicate<E> valid, Comparator<E> order) {
 
 		col.stream().filter(valid)
 				.sorted(order).forEach(e -> e.accept(visitor));
-
 	}
 }
 

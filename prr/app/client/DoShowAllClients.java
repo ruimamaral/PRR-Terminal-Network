@@ -1,9 +1,6 @@
 package prr.app.client;
 
-import java.util.Comparator;
-
 import prr.core.Network;
-import prr.core.client.Client;
 import prr.util.StringMaker;
 
 import pt.tecnico.uilib.menus.Command;
@@ -24,8 +21,7 @@ class DoShowAllClients extends Command<Network> {
 
 		_receiver.visitAll(stringMaker,
 				_receiver.getAllClients(),
-				t -> true,
-				Comparator.comparing(Client::getKey));
+				t -> true);
 
 		if (stringMaker.length() != 0) {
 			_display.popup(stringMaker);

@@ -1,9 +1,6 @@
 package prr.app.lookup;
 
-import java.util.Comparator;
-
 import prr.core.Network;
-import prr.core.client.Client;
 import prr.util.StringMaker;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -23,8 +20,7 @@ class DoShowClientsWithoutDebts extends Command<Network> {
 
 		_receiver.visitAll(stringMaker,
 				_receiver.getAllClients(),
-				c -> c.getDebt() == 0,
-				Comparator.comparing(Client::getKey));
+				c -> c.getDebt() == 0);
 
 		if (stringMaker.length() != 0) {
 			_display.popup(stringMaker);

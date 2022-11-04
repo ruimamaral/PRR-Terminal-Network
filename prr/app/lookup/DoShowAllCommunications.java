@@ -1,9 +1,6 @@
 package prr.app.lookup;
 
-import java.util.Comparator;
-
 import prr.core.Network;
-import prr.core.communication.Communication;
 import prr.util.StringMaker;
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
@@ -23,8 +20,7 @@ class DoShowAllCommunications extends Command<Network> {
 
 		_receiver.visitAll(stringMaker,
 				_receiver.getAllCommunications(),
-				c -> true,
-				Comparator.comparing(Communication::getKey));
+				c -> true);
 
 		if (stringMaker.length() != 0) {
 			_display.popup(stringMaker);

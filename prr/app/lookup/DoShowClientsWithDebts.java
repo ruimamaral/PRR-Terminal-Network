@@ -21,7 +21,7 @@ class DoShowClientsWithDebts extends Command<Network> {
 	protected final void execute() throws CommandException {
 		final StringMaker stringMaker = new StringMaker();
 
-		_receiver.visitAll(stringMaker,
+		_receiver.visitAllSorted(stringMaker,
 				_receiver.getAllClients(),
 				c -> c.getDebt() > 0,
 				Comparator.comparing(Client::getDebt).reversed()

@@ -1,10 +1,7 @@
 package prr.app.lookup;
 
-import java.util.Comparator;
-
 import prr.core.Network;
 import prr.core.client.Client;
-import prr.core.communication.Communication;
 import prr.core.exception.UnknownClientKeyException;
 import prr.util.StringMaker;
 import pt.tecnico.uilib.menus.Command;
@@ -29,8 +26,7 @@ class DoShowCommunicationsToClient extends Command<Network> {
 			Client client = _receiver.getClient(clientKey);
 			_receiver.visitAll(stringMaker,
 					_receiver.getAllCommunications(),
-					c -> c.getReceiver().getClient().equals(client),
-					Comparator.comparing(Communication::getKey));
+					c -> c.getReceiver().getClient().equals(client));
 		} catch (UnknownClientKeyException e) {
 			throw new prr.app.exception.UnknownClientKeyException(clientKey);
 		}
