@@ -247,7 +247,7 @@ public class Client implements Serializable, Visitable {
 		private static final long serialVersionUID = 202211022106L;
 
 		public GoldClientStatus() {
-			super(DefaultPricing.getNormal());
+			super(DefaultPricing.getGold());
 		}
 	
 		public String getName() {
