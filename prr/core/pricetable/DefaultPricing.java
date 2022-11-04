@@ -1,17 +1,17 @@
 package prr.core.pricetable;
 
-import java.io.Serial;
 import java.io.Serializable;
-import java.util.function.DoubleFunction;
+import java.io.Serial;
 
 import prr.core.communication.VideoCommunication;
 import prr.core.communication.VoiceCommunication;
+import prr.util.SerializableDoubleFunction;
 import prr.core.communication.TextCommunication;
 
 public class DefaultPricing implements PriceTable, Serializable {
 
 	@Serial
-	private static final long serialVersionUID = 202210311305L;
+	private static final long serialVersionUID = 202210161925L;
 
 	private static PriceTable _normal;
 	private static PriceTable _gold;
@@ -25,11 +25,12 @@ public class DefaultPricing implements PriceTable, Serializable {
 
 	private double _mediumTextPrice;
 
-	private DoubleFunction<Double> _longTextCostFormula;
+	private SerializableDoubleFunction<Double> _longTextCostFormula;
 
-	private DefaultPricing(double videoRate,
-			double voiceRate, double shortTextPrice,
-			double mediumTextPrice, DoubleFunction<Double> longText) {
+	private DefaultPricing(
+			double videoRate, double voiceRate,
+			double shortTextPrice, double mediumTextPrice,
+			SerializableDoubleFunction<Double> longText) {
 
 		this._videoRate = videoRate;
 		this._voiceRate = voiceRate;
@@ -85,7 +86,7 @@ public class DefaultPricing implements PriceTable, Serializable {
 
 	public static PriceTable getPlatinum() {
 		if (_platinum == null) {
-			_platinum = new DefaultPricing(10, 10, 0, 4, x -> (double) 4); 
+			_platinum = new DefaultPricing(10, 10, 0, 4, x -> 4D); 
 		}
 		return _platinum;
 	}
