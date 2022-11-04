@@ -67,11 +67,14 @@ public abstract class Communication implements Visitable, Serializable {
 	}
 	public abstract String getTypeName();
 
-	public double setCost(PriceTable priceTable) {
-		double cost = this.calculateCost(priceTable);
+	public abstract double logCommunication(PriceTable priceTable);
+
+	protected void setCost(double cost) {
 		this._cost = cost;
-		this._isOngoing = false;
-		return cost;
+	}
+
+	protected void setIsOngoing(boolean isOngoing) {
+		this._isOngoing = isOngoing;
 	}
 
 	public void setUnits(int units) {
@@ -85,8 +88,6 @@ public abstract class Communication implements Visitable, Serializable {
 		this._isPaid = true;
 		return this._cost;
 	}
-
-	protected abstract double calculateCost(PriceTable priceTable);
 
 	public boolean isFriendly() {
 		return this._friendly;

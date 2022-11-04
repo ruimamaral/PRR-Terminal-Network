@@ -14,12 +14,17 @@ public class VoiceCommunication extends Communication {
 		super(key, sender, receiver);
 	}
 
+	@Override
+	public double logCommunication(PriceTable priceTable) {
+		double cost = priceTable.getCost(this);
+		this.setIsOngoing(false);
+		this.setCost(cost);
+		this.getClient().endVoiceCommunication();
+		return cost;
+	}
+
+	@Override
 	public String getTypeName() {
 		return "VOICE";
 	}
-
-	public double calculateCost(PriceTable priceTable) {
-		return priceTable.getCost(this);
-	}
-	
 }

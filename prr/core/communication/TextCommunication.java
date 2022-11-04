@@ -19,12 +19,18 @@ public class TextCommunication extends Communication {
 		this.setUnits(message.length());
 	}
 
-	public String getTypeName() {
-		return "TEXT";
+	@Override
+	public double logCommunication(PriceTable priceTable) {
+		double cost = priceTable.getCost(this);
+		this.setIsOngoing(false);
+		this.setCost(cost);
+		this.getClient().sendTextCommunication();
+		return cost;
 	}
 
-	public double calculateCost(PriceTable priceTable) {
-		return priceTable.getCost(this);
+	@Override
+	public String getTypeName() {
+		return "TEXT";
 	}
 	
 }

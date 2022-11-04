@@ -232,7 +232,6 @@ abstract public class Terminal implements Serializable, Visitable {
 		if (this.canStartCommunication()) {
 			comm.getReceiver().receiveVoiceCommunication(comm);
 			this.startInteractiveCommunication(comm);
-			comm.getClient().startVoiceCommunication();
 		} else {
 			throw new IllegalAccessException();
 		}
@@ -272,8 +271,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		if (this.canStartCommunication()) {
 			comm.getReceiver().receiveTextCommunication(comm);
 			this.addCommunication(comm);
-			this.addDebt(comm.setCost(this.getPriceTable()));
-			comm.getClient().sendTextCommunication();
+			this.addDebt(comm.logCommunication(this.getPriceTable()));
 		} else {
 			throw new IllegalAccessException();
 		}
@@ -433,7 +431,8 @@ abstract public class Terminal implements Serializable, Visitable {
 			Communication comm = super.endCurrentCommunication(duration);
 			comm.getReceiver().endCurrentCommunication(duration);
 			comm.setUnits(duration);
-			Terminal.this.addDebt(comm.setCost(Terminal.this.getPriceTable()));
+			Terminal.this.addDebt(
+					comm.logCommunication(Terminal.this.getPriceTable()));
 			return comm;
 		}
 	}

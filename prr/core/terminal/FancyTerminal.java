@@ -38,7 +38,6 @@ public class FancyTerminal extends Terminal {
 		if (this.canStartCommunication()) {
 			comm.getReceiver().receiveVideoCommunication(comm);
 			this.startInteractiveCommunication(comm);
-			comm.getClient().startVideoCommunication();
 		} else {
 			throw new IllegalAccessException();
 		}

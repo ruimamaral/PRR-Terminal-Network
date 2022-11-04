@@ -148,12 +148,12 @@ public class Client implements Serializable, Visitable {
 		this._status.updateStatus();
 	}
 
-	public void startVideoCommunication() {
-		this._status.startVideoCommunication();
+	public void endVideoCommunication() {
+		this._status.endVideoCommunication();
 	}
 
-	public void startVoiceCommunication() {
-		this._status.startVoiceCommunication();
+	public void endVoiceCommunication() {
+		this._status.endVoiceCommunication();
 	}
 
 	public void sendTextCommunication() {
@@ -201,13 +201,13 @@ public class Client implements Serializable, Visitable {
 
 		protected abstract void updateStatus();
 
-		public void startVideoCommunication() {
+		public void endVideoCommunication() {
 			this._consecutiveVideoCommunications += 1;
 			this._consecutiveTextCommunications = 0;
 			this.updateStatus();
 		}
 
-		public void startVoiceCommunication() {
+		public void endVoiceCommunication() {
 			this._consecutiveVideoCommunications = 0;
 			this._consecutiveTextCommunications = 0;
 		}
@@ -234,7 +234,7 @@ public class Client implements Serializable, Visitable {
 
 		@Override
 		protected void updateStatus() {
-			if (Client.this.calculateBalance() > 500) {
+			if (Client.this.calculateBalance() > 500D) {
 				this.setStatus(new GoldClientStatus());
 			}
 		}
