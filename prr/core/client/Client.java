@@ -57,16 +57,21 @@ public class Client implements Serializable, Visitable {
 	}
 
 	@Override
-	public <T> T accept(Visitor<T> visitor) {
-		return visitor.visit(this);
-	}
-
-	@Override
 	public boolean equals(Object other) {
 		if (other instanceof Client) {
 			return this.getKey().equalsIgnoreCase(((Client) other).getKey());
 		}
 		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return this._key.toUpperCase().hashCode();
+	}
+
+	@Override
+	public <T> T accept(Visitor<T> visitor) {
+		return visitor.visit(this);
 	}
 
 	public String getKey() {

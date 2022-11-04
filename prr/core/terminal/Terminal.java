@@ -22,11 +22,10 @@ import prr.util.Visitor;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
-import java.util.TreeSet;
 import java.io.Serial;
 
 /**
@@ -49,8 +48,7 @@ abstract public class Terminal implements Serializable, Visitable {
 			new TreeMap<Integer, Communication>();
 
 	// Set prevents duplicates
-	private Set<Client> _clientsToNotify =
-			new TreeSet<Client>(Comparator.comparing(Client::getKey));
+	private Set<Client> _clientsToNotify = new LinkedHashSet<Client>();
 	
 	private Communication _ongoingCom;
 
