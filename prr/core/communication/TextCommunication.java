@@ -20,12 +20,11 @@ public class TextCommunication extends Communication {
 	}
 
 	@Override
-	public double logCommunication(PriceTable priceTable) {
+	public void logCommunication(PriceTable priceTable) {
 		double cost = priceTable.getCost(this);
-		this.setIsOngoing(false);
-		this.setCost(cost);
+		
+		this.logCost(cost);
 		this.getClient().sendTextCommunication();
-		return cost;
 	}
 
 	@Override

@@ -62,31 +62,29 @@ public abstract class Communication implements Visitable, Serializable {
 	public double getCost() {
 		return this._cost;
 	}
-	public boolean _isOngoing() {
+	public boolean isOngoing() {
 		return this._isOngoing;
 	}
 	public abstract String getTypeName();
 
-	public abstract double logCommunication(PriceTable priceTable);
+	public abstract void logCommunication(PriceTable priceTable);
 
-	protected void setCost(double cost) {
+	protected void logCost(double cost) {
+		this._isOngoing = false;
 		this._cost = cost;
-	}
-
-	protected void setIsOngoing(boolean isOngoing) {
-		this._isOngoing = isOngoing;
+		this._sender.addDebt(cost);
 	}
 
 	public void setUnits(int units) {
 		this._units = units;
 	}
 
-	public double pay() throws IllegalAccessException {
+	public void pay() throws IllegalAccessException {
 		if (this._isOngoing || this._isPaid) {
 			throw new IllegalAccessException();
 		}
+		this._sender.payAmount(this._cost);
 		this._isPaid = true;
-		return this._cost;
 	}
 
 	public boolean isFriendly() {

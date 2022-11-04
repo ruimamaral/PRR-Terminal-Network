@@ -124,6 +124,7 @@ public class Client implements Serializable, Visitable {
 	}
 
 	private double calculateBalance() {
+
 		return this._totalPaid - this._debt;
 	}
 
@@ -145,6 +146,7 @@ public class Client implements Serializable, Visitable {
 
 	public void payAmount(double amount) {
 		this._totalPaid += amount;
+		this._debt -= amount;
 		this._status.updateStatus();
 	}
 

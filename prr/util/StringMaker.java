@@ -65,7 +65,7 @@ public class StringMaker implements Visitor<Void> {
 				.append(comm.getUnits()).append("|")
 				.append(Math.round(comm.getCost())).append("|");
 		
-		if (comm._isOngoing()) {
+		if (comm.isOngoing()) {
  			this._text.append("ONGOING");
 		} else {
 			this._text.append("FINISHED");
