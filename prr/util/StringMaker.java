@@ -63,7 +63,7 @@ public class StringMaker implements Visitor<Void> {
 				.append(comm.getSender().getKey()).append("|")
 				.append(comm.getReceiver().getKey()).append("|")
 				.append(comm.getUnits()).append("|")
-				.append(comm.getCost()).append("|");
+				.append(Math.round(comm.getCost())).append("|");
 		
 		if (comm._isOngoing()) {
  			this._text.append("ONGOING");

@@ -25,7 +25,7 @@ class DoStartInteractiveCommunication extends TerminalCommand {
 	@Override
 	protected final void execute() throws CommandException {
 		String terminalKey = stringField("terminalKey");
-		String type = optionField("commKey");
+		String type = optionField("commType");
 
 		try {
 			_network.registerInteractiveCommunication(
