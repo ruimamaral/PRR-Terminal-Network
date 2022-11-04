@@ -20,13 +20,13 @@ import prr.util.Visitable;
 import prr.util.Visitor;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
-
+import java.util.TreeSet;
 import java.io.Serial;
 
 /**
@@ -48,7 +48,9 @@ abstract public class Terminal implements Serializable, Visitable {
 	private Map<Integer, Communication> _sentComms =
 			new TreeMap<Integer, Communication>();
 
-	private List<Client> _clientsToNotify = new ArrayList<Client>();
+	// Set prevents duplicates
+	private Set<Client> _clientsToNotify =
+			new TreeSet<Client>(Comparator.comparing(Client::getKey));
 	
 	private Communication _ongoingCom;
 
@@ -82,11 +84,11 @@ abstract public class Terminal implements Serializable, Visitable {
 	public String getKey() {
 		return this._key;
 	}
-	public int getTotalPaid() {
-		return (int) Math.round(this._totalPaid);
+	public double getTotalPaid() {
+		return this._totalPaid;
 	}
-	public int getDebt() {
-		return (int) Math.round(this._debt);
+	public double getDebt() {
+		return this._debt;
 	}
 	public Client getClient() {
 		return this._client;
@@ -114,12 +116,12 @@ abstract public class Terminal implements Serializable, Visitable {
 		return this._totalPaid - this._debt;
 	}
 
-	public void addDebt(double amount) {
+	private void addDebt(double amount) {
 		this._debt += amount;
 		this._client.addDebt(amount);
 	}
 
-	public void payAmount(double amount) {
+	private void payAmount(double amount) {
 		this._totalPaid += amount;
 		this._client.payAmount(amount);
 	}

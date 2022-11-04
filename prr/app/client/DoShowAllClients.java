@@ -1,11 +1,13 @@
 package prr.app.client;
 
+import java.util.Comparator;
+
 import prr.core.Network;
+import prr.core.client.Client;
 import prr.util.StringMaker;
-import prr.util.Visitor;
+
 import pt.tecnico.uilib.menus.Command;
 import pt.tecnico.uilib.menus.CommandException;
-//FIXME add more imports if needed
 
 /**
  * Show all clients.
@@ -18,12 +20,14 @@ class DoShowAllClients extends Command<Network> {
 	
 	@Override
 	protected final void execute() throws CommandException {
+		final StringMaker stringMaker = new StringMaker();
 
-		final Visitor<Void> stringMaker = new StringMaker();
+		_receiver.visitAll(stringMaker,
+				_receiver.getAllClients(),
+				t -> true,
+				Comparator.comparing(Client::getKey));
 
-		if (_receiver.getClientCount() != 0) {
-			_receiver.visitAll(stringMaker,
-					_receiver.getAllClients(), client -> true);
+		if (stringMaker.length() != 0) {
 			_display.popup(stringMaker);
 		}
 	}

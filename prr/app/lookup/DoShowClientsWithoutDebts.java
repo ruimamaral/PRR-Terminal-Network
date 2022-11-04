@@ -23,7 +23,7 @@ class DoShowClientsWithoutDebts extends Command<Network> {
 
 		_receiver.visitAll(stringMaker,
 				_receiver.getAllClients(),
-				t -> t.getDebt() == 0,
+				c -> c.getDebt() == 0,
 				Comparator.comparing(Client::getKey));
 
 		if (stringMaker.length() != 0) {

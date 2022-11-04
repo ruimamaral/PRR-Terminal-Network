@@ -27,10 +27,9 @@ class DoShowCommunicationsToClient extends Command<Network> {
 
 		try {
 			Client client = _receiver.getClient(clientKey);
-			// comparator doesnt need to be case insensitive
 			_receiver.visitAll(stringMaker,
 					_receiver.getAllCommunications(),
-					c -> c.getClient().equals(client),
+					c -> c.getReceiver().getClient().equals(client),
 					Comparator.comparing(Communication::getKey));
 		} catch (UnknownClientKeyException e) {
 			throw new prr.app.exception.UnknownClientKeyException(clientKey);

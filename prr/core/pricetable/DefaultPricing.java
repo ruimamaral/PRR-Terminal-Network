@@ -50,7 +50,7 @@ public class DefaultPricing implements PriceTable, Serializable {
 		} else {
 			cost = this._longTextCostFormula.apply((double) units);
 		}
-		return textComm.isFriendly() ? cost : cost / 2;
+		return cost;
 	}
 
 	@Override

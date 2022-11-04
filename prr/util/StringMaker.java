@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import prr.core.client.Client;
 import prr.core.communication.Communication;
+import prr.core.notification.Notification;
 import prr.core.terminal.Terminal;
 
 public class StringMaker implements Visitor<Void> {
@@ -23,8 +24,8 @@ public class StringMaker implements Visitor<Void> {
 			this._text.append("No");
 		}
 		this._text.append("|").append(client.getTerminalCount()).append("|")
-				.append(client.getTotalPaid()).append("|")
-				.append(client.getDebt()).append("\n");
+				.append(Math.round(client.getTotalPaid())).append("|")
+				.append(Math.round(client.getDebt())).append("\n");
 	
 		return null;
 	}
@@ -35,8 +36,8 @@ public class StringMaker implements Visitor<Void> {
 				.append(terminal.getKey()).append("|")
 				.append(terminal.getClientKey()).append("|")
 				.append(terminal.getStateName()).append("|")
-				.append(terminal.getTotalPaid()).append("|")
-				.append(terminal.getDebt());
+				.append(Math.round(terminal.getTotalPaid())).append("|")
+				.append(Math.round(terminal.getDebt()));
 			
 		Collection<String> friends = terminal.getFriendKeys();
 
@@ -55,6 +56,11 @@ public class StringMaker implements Visitor<Void> {
 
 	public Void visit(Communication comm) {
 		// TODO make comm string
+		return null;
+	}
+
+	public Void visit(Notification notification) {
+		// TODO make notif string
 		return null;
 	}
 

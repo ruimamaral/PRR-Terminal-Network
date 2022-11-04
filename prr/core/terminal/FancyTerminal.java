@@ -16,12 +16,9 @@ public class FancyTerminal extends Terminal {
 	@Serial
 	private static final long serialVersionUID = 202210161925L;
 
-	private Object _ongoingCom;
-
 	public FancyTerminal(String key,
 			Client client) throws IllegalArgumentException {
 		super(key, client);
-		this._ongoingCom = null;
 	}
 
 	@Override

@@ -2,9 +2,11 @@ package prr.core.client;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import prr.core.notification.DefaultNotificationDeliveryMethod;
@@ -39,7 +41,8 @@ public class Client implements Serializable, Visitable {
 
 	private NotificationDeliveryMethod _deliveryMethod;
 
-	private List<Notification> _notifications = new ArrayList<Notification>();
+	// Set doesn't allow for duplicate notifications.
+	private Set<Notification> _notifications = new LinkedHashSet<Notification>();
 
 	public Client(String key, String name, int taxId) {
 		this._key = key;
@@ -92,6 +95,13 @@ public class Client implements Serializable, Visitable {
 	}
 	public PriceTable getPriceTable() {
 		return this._status.getPriceTable();
+	}
+	public Collection<Notification> getNotifications() {
+		return Collections.unmodifiableCollection(this._notifications);
+	}
+
+	public void resetNotifications() {
+		this._notifications.clear();
 	}
 
 	private double calculateBalance() {
