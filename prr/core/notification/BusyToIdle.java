@@ -21,7 +21,7 @@ public class BusyToIdle extends Notification {
 	}
 
 	@Override
-	public String getType() {
+	public String getTypeName() {
 		return "B2I";
 	}
 	

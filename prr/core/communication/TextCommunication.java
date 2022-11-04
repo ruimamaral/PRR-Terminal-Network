@@ -19,6 +19,10 @@ public class TextCommunication extends Communication {
 		this.setUnits(message.length());
 	}
 
+	public String getTypeName() {
+		return "TEXT";
+	}
+
 	public double calculateCost(PriceTable priceTable) {
 		return priceTable.getCost(this);
 	}

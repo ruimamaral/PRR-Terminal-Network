@@ -11,6 +11,7 @@ public class StringMaker implements Visitor<Void> {
 
 	private StringBuilder _text = new StringBuilder(500);
 
+	// Format:	CLIENT|key|name|taxId|type|notifications|terminals|payments|debts
 	public Void visit(Client client) {
 
 		this._text.append("CLIENT|").append(client.getKey()).append("|")
@@ -29,7 +30,8 @@ public class StringMaker implements Visitor<Void> {
 	
 		return null;
 	}
-
+	// Format:	terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts|friend1,...,friend
+	//			terminalType|terminalId|clientId|terminalStatus|balance-paid|balance-debts
 	public Void visit(Terminal terminal) {
 
 		this._text.append(terminal.getTypeName()).append("|")
@@ -53,14 +55,29 @@ public class StringMaker implements Visitor<Void> {
 
 		return null;
 	}
-
+	// Format:	type|idCommunication|idSender|idReceiver|units|price|status
 	public Void visit(Communication comm) {
-		// TODO make comm string
+
+		this._text.append(comm.getTypeName()).append("|")
+				.append(comm.getKey()).append("|")
+				.append(comm.getSender().getKey()).append("|")
+				.append(comm.getReceiver().getKey()).append("|")
+				.append(comm.getUnits()).append("|")
+				.append(comm.getCost()).append("|");
+		
+		if (comm._isOngoing()) {
+ 			this._text.append("ONGOING");
+		} else {
+			this._text.append("FINISHED");
+		}
+		this._text.append("\n");
 		return null;
 	}
-
+	// Format:	notification-type|idTerminal
 	public Void visit(Notification notification) {
-		// TODO make notif string
+		this._text.append(notification.getTypeName()).append("|")
+				.append(notification.getTerminalKey());
+		this._text.append("\n");
 		return null;
 	}
 

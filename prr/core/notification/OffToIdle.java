@@ -21,7 +21,7 @@ public class OffToIdle extends Notification {
 	}
 
 	@Override
-	public String getType() {
+	public String getTypeName() {
 		return "O2I";
 	}
 	

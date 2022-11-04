@@ -14,6 +14,10 @@ public class VoiceCommunication extends Communication {
 		super(key, sender, receiver);
 	}
 
+	public String getTypeName() {
+		return "VOICE";
+	}
+
 	public double calculateCost(PriceTable priceTable) {
 		return priceTable.getCost(this);
 	}

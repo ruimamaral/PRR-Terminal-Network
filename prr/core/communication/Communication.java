@@ -62,6 +62,10 @@ public abstract class Communication implements Visitable, Serializable {
 	public double getCost() {
 		return this._cost;
 	}
+	public boolean _isOngoing() {
+		return this._isOngoing;
+	}
+	public abstract String getTypeName();
 
 	public double setCost(PriceTable priceTable) {
 		double cost = this.calculateCost(priceTable);

@@ -14,6 +14,10 @@ public class VideoCommunication extends Communication {
 		super(key, sender, receiver);
 	}
 
+	public String getTypeName() {
+		return "VIDEO";
+	}
+
 	public double calculateCost(PriceTable priceTable) {
 		return priceTable.getCost(this);
 	}

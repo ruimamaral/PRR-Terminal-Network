@@ -21,7 +21,7 @@ public class SilentToIdle extends Notification {
 	}
 
 	@Override
-	public String getType() {
+	public String getTypeName() {
 		return "S2I";
 	}
 	

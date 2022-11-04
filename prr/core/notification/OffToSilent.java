@@ -21,7 +21,7 @@ public class OffToSilent extends Notification {
 	}
 
 	@Override
-	public String getType() {
+	public String getTypeName() {
 		return "O2S";
 	}
 

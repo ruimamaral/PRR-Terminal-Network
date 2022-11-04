@@ -38,6 +38,7 @@ class DoShowClient extends Command<Network> {
 				// This comparator maintains the original order
 				Comparator.comparing(n -> 0));
 
+		client.resetNotifications();
 		_display.popup(stringMaker);
 	}
 }

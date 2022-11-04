@@ -34,6 +34,6 @@ public abstract class Notification implements Serializable, Visitable {
 		return this._terminalKey;
 	}
 
-	public abstract String getType();
+	public abstract String getTypeName();
 	
 }

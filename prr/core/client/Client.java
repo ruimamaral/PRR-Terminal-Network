@@ -109,6 +109,20 @@ public class Client implements Serializable, Visitable {
 		this._notifications.clear();
 	}
 
+	public void turnOffNotifications() throws IllegalAccessException {
+		if (!this.hasNotificationsEnabled()) {
+			throw new IllegalAccessException();
+		}
+		this._notificationsOn = false;
+	}
+
+	public void turnOnNotifications() throws IllegalAccessException {
+		if (this.hasNotificationsEnabled()) {
+			throw new IllegalAccessException();
+		}
+		this._notificationsOn = true;
+	}
+
 	private double calculateBalance() {
 		return this._totalPaid - this._debt;
 	}
