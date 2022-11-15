@@ -44,7 +44,7 @@ abstract public class Terminal implements Serializable, Visitable {
 
 	private Map<String, Terminal> _friends = new TreeMap<String, Terminal>();
 
-	private Map<Integer, Communication> _sentComms =
+	private Map<Integer, Communication> _comms =
 			new TreeMap<Integer, Communication>();
 
 	// Set prevents duplicates
@@ -92,7 +92,7 @@ abstract public class Terminal implements Serializable, Visitable {
 		return this._client;
 	}
 	public boolean isInactive() {
-		return this._sentComms.size() == 0;
+		return this._comms.size() == 0;
 	}
 	public String getClientKey() {
 		return this._client.getKey();
@@ -126,10 +126,13 @@ abstract public class Terminal implements Serializable, Visitable {
 	}
 
 	public void payCommunication(int commKey) throws IllegalAccessException {
-		if (!this._sentComms.containsKey(commKey)) {
+		if (!this._comms.containsKey(commKey)) {
 			throw new IllegalAccessException();
 		}
-		Communication comm = this._sentComms.get(commKey);
+		Communication comm = this._comms.get(commKey);
+		if (!comm.getSender().equals(this)) {
+			throw new IllegalAccessException();
+		}
 		comm.pay();
 	}
 
@@ -174,7 +177,7 @@ abstract public class Terminal implements Serializable, Visitable {
 	}
 
 	private void addCommunication(Communication communication) {
-		this._sentComms.put(communication.getKey(), communication);
+		this._comms.put(communication.getKey(), communication);
 	}
 
 	private void logCommunicationAttempt(Communication comm) {
@@ -257,6 +260,7 @@ abstract public class Terminal implements Serializable, Visitable {
 			TargetBusyException, TargetSilentException, TargetOffException {
 			
 		this._state.receiveInteractiveCommunication(comm);
+		this.addCommunication(comm);
 	}
 
 	public Communication sendTextCommunication(
@@ -281,6 +285,7 @@ abstract public class Terminal implements Serializable, Visitable {
 			Communication comm) throws TargetOffException {
 
 		this._state.receiveTextCommunication(comm);
+		this.addCommunication(comm);
 	}
 
 	public double endCurrentCommunication(
