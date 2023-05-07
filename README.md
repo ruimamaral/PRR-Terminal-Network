@@ -1,6 +1,6 @@
 # PRR Terminal Network
 
-22/23 Object Oriented Programming class project. IST.
+22/23 Object Oriented Programming class project at IST.
 
 CLI for a network of terminals which the client can use to communicate with other clients.
 There are Basic and Fancy terminals which support different types of communications.
